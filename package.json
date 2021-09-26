@@ -1,6 +1,6 @@
 {
   "name": "algorithms",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -9,10 +9,8 @@
   "dependencies": {
     "axios": "^0.21.4",
     "element-plus": "^1.1.0-beta.8",
-    "md5": "^2.3.0",
     "vue": "^3.0.5",
     "vue-router": "^4.0.11",
-    "vue3-ace-editor": "^2.2.1",
     "vuex": "^4.0.2"
   },
   "devDependencies": {
