@@ -2,6 +2,14 @@
 frontend for Algorithm Visualization Platform.
 
 
+* 部署方法
+
+    ```shell
+      npm run build
+    ```
+
+  而后将dist目录下产生的文件，上传到服务器的`/root/Project/files/avp_frontend`中，即可通过服务器IP访问
+
 * 使用方法
 
   * 运行方法:(需要有nodejs环境,在项目根目录下执行)
