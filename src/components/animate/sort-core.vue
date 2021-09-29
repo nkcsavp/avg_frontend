@@ -1,13 +1,17 @@
 <template>
-  <button disabled id="test-button" @click="JsonTest">begin</button>
-  <div class="display-area">
+  <div>
+    <button disabled id="test-button" @click="JsonTest">begin</button>
+    <div class="display-area"/>
   </div>
+
 </template>
 
 <script>
+import {provide} from 'vue'
 export default {
   name: 'sort-core',
   mounted() {
+    provide("sortAnimation","vue");
     setTimeout(() => {
       console.log(`from mounted.`);
       init();
@@ -16,14 +20,8 @@ export default {
   },
   methods: {
     JsonTest() {
-      let jsonObj = JSON.parse(`{
-        "originData":[1,2,3,9,3,4,5],
-        "operations":["get(0)","get(1)","get(1)","get(2)","get(2)","get(3)","get(3)","get(4)",
-            "swap(3,4)","get(4)","get(5)","swap(4,5)","get(5)","get(6)","swap(5,6)","get(0)","get(1)","get(1)",
-            "get(2)","get(2)","get(3)","get(3)","get(4)","get(4)","get(5)","get(0)","get(1)","get(1)","get(2)",
-            "get(2)","get(3)","get(3)","get(4)","get(0)","get(1)","get(1)","get(2)","get(2)","get(3)","get(0)",
-            "get(1)","get(1)","get(2)","get(0)","get(1)"]
-        }`);
+      let jsonObj = JSON.parse(`{"originData":[7,4,5,3,6,9,1,8],"operations":["get(0)","get(1)","swap(0,1)","get(1)","get(2)","swap(1,2)","get(2)","get(3)","swap(2,3)","get(3)","get(4)","swap(3,4)","get(4)","get(5)","get(5)","get(6)","swap(5,6)","get(6)","get(7)","swap(6,7)","get(0)","get(1)","get(1)","get(2)","swap(1,2)","get(2)","get(3)","get(3)","get(4)","get(4)","get(5)","swap(4,5)","get(5)","get(6)","get(0)","get(1)","swap(0,1)","get(1)","get(2)","get(2)","get(3)","get(3)","get(4)","swap(3,4)","get(4)","get(5)","get(0)","get(1)","get(1)","get(2)","get(2)","get(3)","swap(2,3)","get(3)","get(4)","get(0)","get(1)","get(1)","get(2)","swap(1,2)","get(2)","get(3)","get(0)","get(1)","swap(0,1)","get(1)","get(2)","get(0)","get(1)"]}
+`);
       this.beginDisplay(jsonObj);
     },
 
@@ -520,13 +518,13 @@ function resetAnimation(aim) {
 <style>
 /*CSS样式*/
 .display-area {
-  height: 350px;
+  height: 200px;
   width: 0px;
   /*background-color: beige;*/
   position: relative;
-  top: 75px;
-  left: 75px;
+  margin: 10px;
   display: flex;
+  border: 1px solid black;
 }
 .display-block {
   background-color: aqua;

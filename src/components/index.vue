@@ -148,7 +148,7 @@ export default {
   height: 600px;
   /*background-color: #99a9bf;*/
   /*background-image: url("https://www.blockchain.com/static/img/home/home-hero-gradient.svg");*/
-  background-image: url("bc.jpg");
+  background-image: url("/public/bc.jpg");
   background-size: cover;
 }
 

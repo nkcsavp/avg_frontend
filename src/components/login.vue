@@ -1,20 +1,19 @@
 <template>
 
   <div>
-
-    <el-form  :rules="rules" ref="loginForm" :model="loginForm" :label-position="labelPosition"
+    <el-form :rules="rules" ref="loginForm" :model="loginForm" :label-position="labelPosition"
               label-width="80px" class="login-container">
-      <h3 class="login-title">密码登录</h3>
-      <el-form-item label="用户名" prop="username">
-        <el-input type="text" autocomplete="false" v-model="loginForm.username"  placeholder="请输入用户名"></el-input>
+      <h3 class="login-title">登陆</h3>
+      <el-form-item label="用户名" prop="name">
+        <el-input type="text" autocomplete="false" v-model="loginForm.name"  placeholder="请输入用户名"></el-input>
       </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input type="password" autocomplete="false" v-model="loginForm.password" placeholder="请输入密码" show-password></el-input>
+      <el-form-item label="密码" prop="pwd">
+        <el-input type="password" autocomplete="false" v-model="loginForm.pwd" placeholder="请输入密码" show-password></el-input>
       </el-form-item>
-      <el-checkbox v-model="checked" style="margin-top:-10px;margin-bottom: 10px;margin-left:50px;">记住我</el-checkbox>
       <br>
-      <el-button type="primary" style="width:170px" @click="submitLogin">登录</el-button>
-      <el-button type="primary" style="width:170px" @click="$router.push('/register')">注册</el-button>
+      <el-button type="primary" style="width: 200px" @click="submitLogin">登陆</el-button>
+      <el-link :underline="false" type="primary" style="margin-top:10px;margin-left:140px;"
+               @click="$router.push('/register')">没有账号？前往注册</el-link>
     </el-form>
   </div>
 </template>
@@ -26,48 +25,46 @@ import store from "../store/vuex";
 
 export default {
     name: "Login",
-    data(){
+    setup(){
       return{
+        submitLogin() {
+          this.$refs.loginForm.validate((valid) => {
+            store.dispatch("Load");
+            if (valid) {
+              axios({
+                async:false,
+                params:
+                this.loginForm,
+                url:"LogInServlet",
+              }).then((res)=> {
+                if(res.data === true){
+                  router.replace("/")
+                }else{
+                  this.message.error('用户名或密码错误');
+                }
+                store.dispatch("Finished");
+              })
+            }else {
+              this.message.error('未输入所有信息！');
+              return false;
+            }
+          })
+        },
         labelPosition:'right',
         loginForm:{
-          username:'',
-          password:'',
+          name:'',
+          pwd:'',
         },
-        checked:true,
         rules:{
           username:[{required:true,message:'请输入用户名',trigger:'blur'}],
           password:[{required:true,message:'请输入密码',trigger:'blur'}],
         }
       };
     },
-    methods:{
-      submitLogin() {
-        this.$refs.loginForm.validate((valid) => {
-          store.dispatch("Load");
-          if (valid) {
-            axios({
-              async:false,
-              url:"AddUserServlet",
-              params:this.loginForm
-            }).then((res)=> {
-              if(res.data['status'] === true){
-                router.replace("/login")
-              }else{
-                this.message.error('用户名或密码错误');
-              }
-              store.dispatch("Finished");
-            })
-          }else {
-            this.message.error('未输入所有信息！');
-            return false;
-          }
-        })
-      },
-    }
   }
 </script>
 
-<style >
+<style scoped>
   .login-container{
     border-radius: 15px;
     background-clip: padding-box;
