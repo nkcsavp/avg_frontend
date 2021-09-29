@@ -7,11 +7,9 @@
 </template>
 
 <script>
-import {provide} from 'vue'
 export default {
   name: 'sort-core',
   mounted() {
-    provide("sortAnimation","vue");
     setTimeout(() => {
       console.log(`from mounted.`);
       init();
