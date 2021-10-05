@@ -4,7 +4,7 @@ import router from "./router"
 import ElementPlus from 'element-plus'
 import axios from "axios"
 import 'element-plus/dist/index.css'
-import store from './store/vuex.js'
+import store from './store'
 
 axios.defaults.withCredentials=true;
 // 部署时使用以下代码

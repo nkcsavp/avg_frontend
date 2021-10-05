@@ -7,13 +7,29 @@
 </template>
 
 <script>
+import { useStore } from "vuex";
+import { onMounted,onUnmounted } from "vue";
+
 export default {
   name: 'sort-core',
-  mounted() {
-    setTimeout(() => {
+  setup(context){
+    const store = useStore();
+    onMounted(()=>{
       init();
       document.getElementById('test-button').disabled = false;
-    }, 500);
+      setTimeout(()=>{
+        store.dispatch("Finished");
+      },500)
+
+
+    });
+    onUnmounted(()=>{
+      let styleSheets = document.getElementsByClassName("AnimationSheet");
+      console.log(styleSheets)
+      while(styleSheets.length != 0){
+        styleSheets[0].parentElement.removeChild(styleSheets[0]);
+      }
+    })
   },
   methods: {
     JsonTest() {
@@ -422,6 +438,7 @@ function updateBlockInfo(aimBlock) {
 }
 
 function init() {
+
   let initKeyFramesCreate = `@keyframes keyframe_create {
           0% {
           }
@@ -431,6 +448,7 @@ function init() {
   let sheetForKeyFramesCreate = document.createElement(`style`);
   sheetForKeyFramesCreate.type = 'text/css';
   sheetForKeyFramesCreate.innerHTML = initKeyFramesCreate;
+  sheetForKeyFramesCreate.className = "AnimationSheet"
   document
       .getElementsByTagName('head')[0]
       .appendChild(sheetForKeyFramesCreate);
@@ -474,6 +492,7 @@ function init() {
   let sheetForKeyFramesSwap = document.createElement(`style`);
   sheetForKeyFramesSwap.type = 'text/css';
   sheetForKeyFramesSwap.innerHTML = initKeyFramesSwap;
+  sheetForKeyFramesSwap.className = "AnimationSheet";
   document.getElementsByTagName('head')[0].appendChild(sheetForKeyFramesSwap);
 
   let initKeyFramesGet = `@keyframes keyframe_get{
@@ -487,6 +506,7 @@ function init() {
   let sheetForKeyFramesGet = document.createElement(`style`);
   sheetForKeyFramesGet.type = 'text/css';
   sheetForKeyFramesGet.innerHTML = initKeyFramesGet;
+  sheetForKeyFramesGet.className = "AnimationSheet";
   document.getElementsByTagName('head')[0].appendChild(sheetForKeyFramesGet);
 
   console.log('keyframes should be inited.');
