@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <button disabled id="test-button" @click="JsonTest">begin</button>
+  <div class="sort-core-frame">
+    <button disabled id="test-button" @click="JsonTest">Begin(Only for test)</button>
     <div class="display-area"/>
   </div>
 
@@ -11,7 +11,6 @@ export default {
   name: 'sort-core',
   mounted() {
     setTimeout(() => {
-      console.log(`from mounted.`);
       init();
       document.getElementById('test-button').disabled = false;
     }, 500);
@@ -522,7 +521,6 @@ function resetAnimation(aim) {
   position: relative;
   margin: 10px;
   display: flex;
-  border: 1px solid black;
 }
 .display-block {
   background-color: aqua;
@@ -530,5 +528,12 @@ function resetAnimation(aim) {
   width: 0px;
   position: absolute;
   top: 100px;
+}
+.sort-core-frame{
+  padding: 20px;
+  border: 1px solid var(--el-border-color-base);
+  box-shadow:var(--el-box-shadow-light);
+  border-radius: var(--el-border-radius-base);
+  margin: 10px;
 }
 </style>

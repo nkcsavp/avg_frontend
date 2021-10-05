@@ -6,8 +6,6 @@
 </template>
 
 <script>
-// import {useRouter, useRoute} from "vue-router";
-import {inject, provide} from "vue";
 import sortCore from '../animate/sort-core.vue'
 import codeFrame from '../code-frame.vue'
 
@@ -17,15 +15,6 @@ export default {
     sortCore,
     codeFrame
   },
-
-
-  setup(){
-    let fun = inject("sortAnimation");
-    console.log(fun)
-    return{
-      fun
-    }
-  }
 }
 </script>
 
