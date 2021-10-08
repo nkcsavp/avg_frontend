@@ -1,6 +1,9 @@
 <template>
+  <div>
 
+  <el-alert title="使用自定义排序前，请先登陆。" type="success" />
   <div class="login-container">
+
     <el-form  :rules="rules" ref="loginForm" :model="loginForm" :label-position="labelPosition"
               label-width="120px"  status-icon>
       <h3 class="login-title">Log In</h3>
@@ -17,6 +20,7 @@
       </el-form-item>
 
     </el-form>
+  </div>
   </div>
 </template>
 
@@ -84,6 +88,7 @@ export default {
           }).then((res)=> {
             if(res.data === true){
               router.replace("/")
+              store.dispatch("SignIn")
             }else{
               this.message.error('Wrong UserName or Password');
             }

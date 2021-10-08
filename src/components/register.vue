@@ -66,7 +66,7 @@ export default {
     const validatePwd = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('Please re-input password'))
-      } else if (value !== this.registerForm.pass) {
+      } else if (value !== this.registerForm.pwd) {
         callback(new Error('Error! Two passwords are not the same.'))
       } else {
         callback()
@@ -100,7 +100,7 @@ export default {
               pwd: md5(this.registerForm.pwd)
             }
           }).then((res) => {
-            if (res.data['status'] === true) {
+            if (res.data === true) {
               router.replace("/login")
             } else {
               this.message.error('Duplicated Username')

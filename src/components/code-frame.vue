@@ -1,26 +1,26 @@
 <template>
 
   <div class="code-frame" >
-    <el-form ref="form"  label-width="120px">
-      <el-form-item label="Sample">
-        <el-input v-model="sample"></el-input>
+    <el-form ref="codeForm" :rules="rules" label-width="120px" :model="codeForm" label-position="right" status-icon>
+      <el-form-item label="Sample" prop="sample">
+        <el-input v-model="codeForm.sample"></el-input>
       </el-form-item>
-      <el-form-item label="Mode">
-        <el-select v-model="mode" placeholder="Mode:">
+      <el-form-item label="Mode" prop="mode">
+        <el-select v-model="codeForm.mode" placeholder="Mode:">
           <el-option label="Sort" value="sort"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="Language">
-        <el-select v-model="lang" placeholder="Language:">
+      <el-form-item label="Language" prop="lang">
+        <el-select v-model="codeForm.lang" placeholder="Language:">
           <el-option label="Java" value="java"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="Code">
+      <el-form-item label="Code" prop="codes">
         <div class="editor">
           <v-ace-editor
-            v-model:value="codes"
+            v-model:value="codeForm.codes"
             lang="java"
-            theme="chrome"
+            theme="xcode"
             style="height: 300px" />
         </div>
 
@@ -39,16 +39,17 @@
 <script>
 
 import axios from "axios";
-import sortCore from './animate/sort-core.vue'
+import sortCore from './algos/animate/sort-core.vue'
 import {ref} from "vue";
 import { VAceEditor } from 'vue3-ace-editor';
 import 'ace-builds/src-noconflict/mode-java';
-import 'ace-builds/src-noconflict/theme-chrome';
+import 'ace-builds/src-noconflict/theme-xcode';
+
 
 export default {
   name: "code-frame",
 
-  setup(){
+  data(){
     const mode = ref("sort");
     let sample = ref("1,2,3,4,5")
     let lang = ref("java");
@@ -59,38 +60,64 @@ export default {
         "   data.swap(3,4);\n" +
         " }\n" +
         "}\n")
-    const submitCode = function () {
-      codes.value.replace("+","%2B");
-      axios({
-        url:"submit",
-        params:{
-          code:codes.value,
-          lang:lang.value,
-          mode:mode.value,
-          sample:"{" + sample.value + "}"
+    const checkSample = (rule, value, callback) => {
+      const samplePattern = /^([0-9],)*$/;
+      if (value === "") {
+        return callback(new Error('Please input test sample'))
+      }
+      setTimeout(() => {
+        if (!samplePattern.test(value + ",")) {
+          console.log(value)
+          callback(new Error('Test case need to be like this \"1,2,3,4,5\"'))
+        } else {
+          callback()
         }
-      }).then((res)=>{
-        console.log(res)
-        if(res.data === "TLE"){
-          alert("TLE")
-        }
-        else if (res.data === "TMR"){
-          alert("TMR")
-        }
-        sortCore.methods.beginDisplay(res.data);
-      })
+      }, 300)
     }
     return{
-      submitCode,
-      mode,
-      lang,
-      codes,
-      sample,
+      codeForm:{
+        mode,
+        lang,
+        codes,
+        sample
+      },
+      rules:{
+        sample:[{required:true,validator:checkSample,trigger:'blur'}],
+        lang:[{required:true,trigger:'blur'}],
+        codes:[{required:true,trigger:'blur'}],
+        mode:[{required:true,trigger:'blur'}],
+      }
     }
   },
   components: {
     VAceEditor
   },
+  methods:{
+    submitCode:function () {
+      this.$refs.codeForm.validate((valid)=>{
+        this.codeForm.codes.replace("+","%2B");
+        axios({
+          url:"submit",
+          params:{
+            code:this.codeForm.codes,
+            lang:this.codeForm.lang,
+            mode:this.codeForm.mode,
+            sample:"{" + this.codeForm.sample + "}"
+          }
+        }).then((res)=>{
+          console.log(res)
+          if(res.data === "TLE"){
+            alert("TLE")
+          }
+          else if (res.data === "TMR"){
+            alert("TMR")
+          }
+          sortCore.methods.beginDisplay(res.data);
+        })
+      })
+
+    }
+  }
 }
 </script>
 

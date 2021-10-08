@@ -5,13 +5,18 @@
         default-active="/"
         router
     >
-      <el-menu-item index="/"><img src="logo.svg" >&nbsp;&nbsp; Algorithm Visualization Platform</el-menu-item>
+      <el-menu-item index="/"><img src="\logo.svg" >&nbsp;&nbsp; Algorithm Visualization Platform</el-menu-item>
 
-      <el-menu-item index="/login">Log In</el-menu-item>
-      <el-menu-item index="/register">Register</el-menu-item>
+      <el-menu-item v-for="i in unsignedItems" :index="i.idx">{{ i.name }}</el-menu-item>
+
     </el-menu>
     <el-main v-loading="isLoading">
-      <router-view></router-view>
+      <router-view v-slot="{ Component }">
+        <transition name="el-fade-in" mode="out-in">
+          <component :is="Component"/>
+        </transition>
+      </router-view>
+
     </el-main>
   </div>
 
@@ -19,7 +24,7 @@
 
 <script>
 import {useStore} from "vuex";
-import {computed} from "vue";
+import {computed,onMounted} from "vue";
 
 export default {
   setup() {
@@ -27,13 +32,27 @@ export default {
     let isLoading = computed(() => {
       return store.state.isLoading;
     })
-    // const saveState = () => {
-    //   sessionStorage.setItem('state', JSON.stringify(store.state))
-    // }
-    // onMounted(() => window.addEventListener('unload', saveState))
+    let unsignedItems;
+    if(!store.state.isSignedIn){
+      unsignedItems = [
+        {name:"Log In",idx:"/login"},
+        {name:"Register",idx:"/register"}
+      ]
+    }
+    else{
+      unsignedItems = [
+        {name:"Mine",idx:"/mine"},
+        {name:"Log Out",idx:"/logout"}
+      ]
+    }
+    const saveState = () => {
+      sessionStorage.setItem('state', JSON.stringify(store.state))
+    }
+    onMounted(() => window.addEventListener('unload', saveState))
     return {
       status,
-      isLoading
+      isLoading,
+      unsignedItems
     }
   },
 }

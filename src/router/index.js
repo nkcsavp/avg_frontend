@@ -1,12 +1,13 @@
 import { createRouter, createWebHashHistory} from 'vue-router';
 
-import Home from '../components/home.vue';
+import Index from '../components/index.vue';
 import Mine from '../components/mine.vue';
 import Login from "../components/login.vue";
 import Register from "../components/register.vue";
-import SortCore from "../components/animate/sort-core.vue";
+import SortCore from "../components/algos/animate/sort-core.vue";
 import Sort from "../components/algos/sort.vue"
-import Tree from "../components/algos/tree.vue"
+import SortInteractive from "../components/algos/interactive/sort-interactive.vue"
+import Hello from "../components/hello.vue"
 
 import store from "../store";
 
@@ -14,19 +15,22 @@ import store from "../store";
 const routes=[
   {
     path: '/',
-    component: Home,
+    component: Index,
     children:[
+      {
+        path: '/',
+        component: Hello
+      },
+      {
+        path: '/sort/interactive',
+        component:SortInteractive,
+      },
       {
         path: '/sort/:type',
         component:Sort,
-      },
-      {
-        path: '/tree/:type',
-        component:Tree,
       }
     ]
   },
-
   {
     path: '/mine',
     component: Mine

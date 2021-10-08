@@ -1,6 +1,6 @@
 <template>
   <div class="sort-core-frame">
-    <button disabled v-show="false" id="test-button" @click="JsonTest">Begin(Only for test)</button>
+    <button disabled id="test-button" @click="JsonTest">Begin(Only for test)</button>
     <div class="display-area"/>
   </div>
 </template>
@@ -551,10 +551,10 @@ function resetAnimation(aim) {
   background-color: black;
 }
 .sort-core-frame{
-  padding: 40px;
+  padding: 20px;
   border: 1px solid var(--el-border-color-base);
   box-shadow:var(--el-box-shadow-light);
   border-radius: var(--el-border-radius-base);
-  margin: 40px;
+  margin: 10px;
 }
 </style>
