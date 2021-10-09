@@ -1,16 +1,16 @@
 import { createRouter, createWebHashHistory} from 'vue-router';
 
-import Index from '../components/index.vue';
-import Mine from '../components/mine.vue';
-import Login from "../components/login.vue";
-import Register from "../components/register.vue";
-import SortCore from "../components/algos/animate/sort-core.vue";
-import Sort from "../components/algos/sort.vue"
-import SortInteractive from "../components/algos/interactive/sort-interactive.vue"
-import Hello from "../components/hello.vue"
+const Index = ()=>import("../components/index.vue")
+const Mine = ()=>import("../components/mine.vue")
+const Login = ()=>import("../components/login.vue")
+const Register = ()=>import("../components/register.vue")
+const SortCore = ()=>import("../components/algos/animate/sort-core.vue")
+const Sort = ()=>import("../components/algos/sort.vue")
+const SortInteractive = ()=>import("../components/algos/interactive/sort-interactive.vue")
+const Hello = ()=>import("../components/hello.vue")
+
 
 import store from "../store";
-
 
 const routes=[
   {
@@ -63,14 +63,16 @@ router.beforeEach((to,from,next)=>{
     }
     else{
       router.push("/");
+      next();
     }
   }
-  else if(to.fullPath.search("mine") !== -1){
+  else if(to.fullPath.search("mine|interactive") !== -1){
     if(store.state.isSignedIn){
       next();
     }
     else{
-      router.push("/");
+      router.push("/login");
+      next();
     }
   }
   else{

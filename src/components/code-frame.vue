@@ -127,7 +127,7 @@ export default {
   border: 1px solid var(--el-border-color-base);
   box-shadow:var(--el-box-shadow-light);
   border-radius: var(--el-border-radius-base);
-  margin: 10px;
+  margin: 40px;
 }
 .editor{
   border-radius: var(--el-border-radius-base);

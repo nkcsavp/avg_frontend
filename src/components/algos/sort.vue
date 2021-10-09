@@ -2,7 +2,7 @@
   <div>
 
   <div class="title">
-    <h1>{{ type }}</h1>
+    <h1>{{ dict[type] }}</h1>
   </div>
 
   <sort-core :key="type"></sort-core>
@@ -24,12 +24,14 @@
 <script>
 import sortCore from './animate/sort-core.vue'
 import { useRoute } from "vue-router";
-import { ref } from 'vue'
+import { inject,watch,ref } from 'vue'
+
 
 export default {
   name: "sort",
   data(){
     const route = useRoute();
+    const dict = inject("dict")
     let type = ref(route.params.type)
 
     const checkSample = (rule, value, callback) => {
@@ -47,6 +49,7 @@ export default {
       }, 300)
     }
     return{
+      dict,
       type,
       rules:{
         sample:[{required:true,validator:checkSample,trigger:'blur'}],
@@ -80,7 +83,7 @@ export default {
   border: 1px solid var(--el-border-color-base);
   box-shadow:var(--el-box-shadow-light);
   border-radius: var(--el-border-radius-base);
-  margin: 10px;
+  margin: 40px;
 }
 .title{
   padding: 20px;

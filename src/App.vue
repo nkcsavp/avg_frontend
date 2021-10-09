@@ -2,7 +2,7 @@
   <div>
     <el-menu
         mode="horizontal"
-        default-active="/"
+        :default-active="this.$route.path"
         router
     >
       <el-menu-item index="/"><img src="\logo.svg" >&nbsp;&nbsp; Algorithm Visualization Platform</el-menu-item>
@@ -16,7 +16,6 @@
           <component :is="Component"/>
         </transition>
       </router-view>
-
     </el-main>
   </div>
 
@@ -24,7 +23,8 @@
 
 <script>
 import {useStore} from "vuex";
-import {computed,onMounted} from "vue";
+import {computed, onMounted, ref} from "vue";
+import {useRoute} from "vue-router"
 
 export default {
   setup() {
@@ -52,7 +52,7 @@ export default {
     return {
       status,
       isLoading,
-      unsignedItems
+      unsignedItems,
     }
   },
 }
