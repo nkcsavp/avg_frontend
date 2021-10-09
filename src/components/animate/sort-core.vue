@@ -3,7 +3,6 @@
     <button disabled id="test-button" @click="JsonTest">Begin(Only for test)</button>
     <div class="display-area"/>
   </div>
-
 </template>
 
 <script>
@@ -54,10 +53,11 @@ export default {
         const newBlock = document.createElement('div');
         newBlock.id = `block-${i}`;
         newBlock.className = 'display-block';
-        newBlock.innerHTML = `${displayArray[i]}`;
+        newBlock.style.textAlign = 'center';
+        newBlock.innerHTML = `<p  display="inline-block" style="line-height: 0%;">${displayArray[i]}</p>`;
         newBlock.style.left = 20 * (i + 1) + 30 * i + 'px';
         document.querySelectorAll('.display-area')[0].appendChild(newBlock);
-        const aimBlock = document.querySelector('#'+newBlock.id);
+        const aimBlock = document.querySelector(`#${newBlock.id}`);
         setTimeout(()=>{displayCreate(aimBlock)},200);
       }
       setTimeout(()=>{
@@ -88,7 +88,7 @@ export default {
           let aimDivId;
           let aimDiv;
 
-          //若已存在两个高亮显示的元素，则这对元素重置后再高亮新的元素
+          //若已存在两个高亮显示的元素，则最早高亮元素重置后再高亮新的元素
           if(window.gottenArray.length>2){
             while(window.gottenArray.length>1){
               aimDivId = `#block-${window.gottenArray[0]}`;
@@ -140,10 +140,11 @@ export default {
             arrayForResetAnimation.push(BL);
             arrayForResetAnimation.push(BR);
 
-            //清除之前的高亮效果
+            //清除所交换方块在高亮队列中的位置、持久化高亮颜色
             while(window.gottenArray.length>0){
               let tempAimDivId = `#block-${window.gottenArray[0]}`;
               let tempAimDiv = document.querySelector(tempAimDivId);
+              tempAimDiv.style.backgroundColor = '#BE0000';
               resetAnimation(tempAimDiv);
               window.gottenArray.shift();
             }
@@ -153,6 +154,7 @@ export default {
             setTimeout(()=>{
               for(let j = 0 ; j<arrayForResetAnimation.length;++j){
                 updateBlockInfo(arrayForResetAnimation[j]);
+                arrayForResetAnimation[j].style.backgroundColor = '#312D29';
                 resetAnimation(arrayForResetAnimation[j]);
               }
               const tempValue = window.displayArray[re[2]];
@@ -210,12 +212,10 @@ function displayCreate(aimDiv) {
         0% {
           width: ${currentWidth}px;
           left: ${currentLeft}px;
-          background-color: black;
         }
         100% {
           width: ${currentWidth + 30}px;
           left: ${currentLeft - 15}px;
-          background: red;
         }
       }`;
   aimFrameInfo.styleSheet.insertRule(
@@ -235,12 +235,14 @@ function displayCreate(aimDiv) {
         0% {
             top: ${currentTop}px;
             height: 2px;
-            background: red;
+            background-color:black;
+            border-radius:0;
           }
           100% {
             top:${currentTop - 28}px;
             height: 30px;
-            background-color: black;
+            background-color:#312D29;
+            border-radius:6.5px;
           }
       }`;
   aimFrameInfo.styleSheet.insertRule(
@@ -266,6 +268,8 @@ function displayCreate(aimDiv) {
   aimDiv.style.animationName = `${keyFrameName_1},${keyFrameName_2}`;
   setTimeout(() => {
     //print log:
+    aimDiv.style.borderRadius = '6px';
+    aimDiv.style.backgroundColor = '#312D29';
     updateBlockInfo(aimDiv);
     aimDiv.style.animationFillMode = 'none';
   }, 2510);
@@ -297,11 +301,9 @@ function displaySwap(pL, pR) {
   const newKeyFrameL1 = `@keyframes keyframe_swap_L1{
     0%{
       top: ${startTopL}px;
-      background-color:blue;
     }
     100%{
       top: ${middleTopL}px;
-      background-color:green;
     }
   }`;
   swapFrame_L1.styleSheet.insertRule(newKeyFrameL1, swapFrame_L1.index);
@@ -311,11 +313,9 @@ function displaySwap(pL, pR) {
   const newKeyFrameR1 = `@keyframes keyframe_swap_R1{
     0%{
       top: ${startTopR}px;
-      background-color:yellow;
     }
     100%{
       top: ${middleTopR}px;
-      background-color:green;
     }
   }`;
   swapFrame_R1.styleSheet.insertRule(newKeyFrameR1, swapFrame_R1.index);
@@ -351,11 +351,11 @@ function displaySwap(pL, pR) {
   const newKeyFrameL3 = `@keyframes keyframe_swap_L3{
     0%{
       top: ${middleTopL}px;
-      background-color:green;
+      background-color: #BE0000;
     }
     100%{
       top: ${startTopL}px;
-      background-color:aqua;
+      background-color: #312D29;
     }
   }`;
   swapFrame_L3.styleSheet.insertRule(newKeyFrameL3, swapFrame_L3.index);
@@ -365,11 +365,11 @@ function displaySwap(pL, pR) {
   const newKeyFrameR3 = `@keyframes keyframe_swap_R3{
     0%{
       top: ${middleTopR}px;
-      background-color:green;
+      background-color: #BE0000;
     }
     100%{
       top: ${startTopR}px;
-      background-color:aqua;
+      background-color: #312D29;
     }
   }`;
   swapFrame_R3.styleSheet.insertRule(newKeyFrameR3, swapFrame_R3.index);
@@ -497,10 +497,10 @@ function init() {
 
   let initKeyFramesGet = `@keyframes keyframe_get{
     0%{
-    background-color: cadetblue;
+    background-color: #312D29;
     }
     100%{
-    background-color: yellow;
+    background-color: #BE0000;
     }
   }`;
   let sheetForKeyFramesGet = document.createElement(`style`);
@@ -543,11 +543,12 @@ function resetAnimation(aim) {
   display: flex;
 }
 .display-block {
-  background-color: aqua;
+  color:white;
   height: 3px;
   width: 0px;
   position: absolute;
   top: 100px;
+  background-color: black;
 }
 .sort-core-frame{
   padding: 20px;
