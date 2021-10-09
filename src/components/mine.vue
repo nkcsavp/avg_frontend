@@ -1,17 +1,17 @@
 <template>
-  <div class="demo-image__lazy">
-    <el-button class="el-button" @click="$router.push('/home')" type="info" >开始体验</el-button>
-  </div>
+  <el-card class="box-card">
+    本页面暂未完成。
+  </el-card>
 </template>
 
 <script>
+  import {useStore} from "vuex";
+
   export default {
+    setup(){
+      useStore().dispatch("Finished")
+    }
   }
 </script>
 <style>
-  .is-background{
-    width:100%;
-    height: 600px;
-  }
-
 </style>

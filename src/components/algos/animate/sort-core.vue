@@ -1,6 +1,6 @@
 <template>
   <div class="sort-core-frame">
-    <button disabled id="test-button" @click="JsonTest">Begin(Only for test)</button>
+    <button disabled v-show="false" id="test-button" @click="JsonTest">Begin(Only for test)</button>
     <div class="display-area"/>
   </div>
 </template>

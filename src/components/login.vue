@@ -87,7 +87,7 @@ export default {
             }
           }).then((res)=> {
             if(res.data === true){
-              router.replace("/")
+              router.push("/")
               store.dispatch("SignIn")
             }else{
               this.message.error('Wrong UserName or Password');

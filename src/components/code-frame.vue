@@ -44,12 +44,14 @@ import {ref} from "vue";
 import { VAceEditor } from 'vue3-ace-editor';
 import 'ace-builds/src-noconflict/mode-java';
 import 'ace-builds/src-noconflict/theme-xcode';
+import {useStore} from "vuex";
 
 
 export default {
   name: "code-frame",
 
   data(){
+    const store = useStore()
     const mode = ref("sort");
     let sample = ref("1,2,3,4,5")
     let lang = ref("java");
@@ -75,6 +77,7 @@ export default {
       }, 300)
     }
     return{
+      store,
       codeForm:{
         mode,
         lang,
@@ -95,6 +98,10 @@ export default {
   methods:{
     submitCode:function () {
       this.$refs.codeForm.validate((valid)=>{
+        if(!valid){
+          return;
+        }
+        this.store.dispatch("Load")
         this.codeForm.codes.replace("+","%2B");
         axios({
           url:"submit",
@@ -105,7 +112,7 @@ export default {
             sample:"{" + this.codeForm.sample + "}"
           }
         }).then((res)=>{
-          console.log(res)
+          this.store.dispatch("Finished")
           if(res.data === "TLE"){
             alert("TLE")
           }

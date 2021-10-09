@@ -8,6 +8,7 @@ const SortCore = ()=>import("../components/algos/animate/sort-core.vue")
 const Sort = ()=>import("../components/algos/sort.vue")
 const SortInteractive = ()=>import("../components/algos/interactive/sort-interactive.vue")
 const Hello = ()=>import("../components/hello.vue")
+const LogOut = ()=>import("../components/logout.vue")
 
 
 import store from "../store";
@@ -46,6 +47,10 @@ const routes=[
   {
     path: '/debug/s',
     component: SortCore,
+  },
+  {
+    path: '/logout',
+    component: LogOut,
   },
 
 ]

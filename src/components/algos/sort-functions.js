@@ -1,40 +1,37 @@
+
+
 const allTypes = {
-    "quick": "快速排序",
-    "bubble": "冒泡排序",
-    "radix": "基数排序",
-    "selection": "选择排序",
-    "insertion": "插入排序",
-    "shell": "希尔排序",
-    "merge": "归并排序",
-    "heap": "堆排序",
-    "counting": "计数排序",
-    "bucket": "桶排序",
+    "quick":"快速排序",
+    "bubble":"冒泡排序",
+    "radix":"基数排序",
+    "selection":"选择排序",
+    "insertion":"插入排序",
+    "shell":"希尔排序",
+    "merge":"归并排序",
+    "heap":"堆排序",
+    "counting":"计数排序",
+    "bucket":"桶排序",
 }
-function sortFunction (type, arr) {
-    if (type === "quick") {
+function sortFunction(type, arr) {
+    if(type === "quick"){
         return QuickSort(arr)
     }
-    else if (type === "bubble") {
+    else if(type === "bubble"){
         return bubbleSort(arr)
     }
-    else if (type === "insertion") {
+    else if(type === "insertion"){
         return insertionSort(arr)
     }
-    else if (type === "heap") {
+    else if(type === "heap"){
         return heapSort(arr)
     }
-    else if (type === "selection") {
+    else if(type === "selection"){
         return selectionSort(arr)
-    }
-    else if (type === "shell") {
-        return shellSort(arr)
-    }
-    else if (type === "merge") {
-        return mergeSort(arr)
     }
     return ""
 
 }
+
 //冒泡排序
 function bubbleSort (arr) {
     var len = arr.length;
@@ -111,7 +108,7 @@ function insertionSort (arr) {
 
 
 //快速排序
-function QuickSort (arr) {
+function QuickSort(arr) {
     var json_str = "{\"originData\":[" + arr.toString() + "],\"operations\":[";
     var operations = [];
     QuickPartSort(arr, 0, arr.length - 1, operations);
@@ -119,9 +116,8 @@ function QuickSort (arr) {
     json_str += operations.toString() + "]}";
     console.log(json_str);
     return json_str;
-
 }
-function QuickPartSort (arr, begin, end, operations) {
+function QuickPartSort(arr, begin, end, operations) {
     if (begin < end) {
         let i = begin + 1;
         let j = end;
@@ -165,7 +161,7 @@ function QuickPartSort (arr, begin, end, operations) {
 }
 
 //堆排序
-function heapSort (iArr) {
+function heapSort(iArr) {
     var json_str = "{\"originData\":[" + iArr.toString() + "],\"operations\":[";
     var operations = [];
     var n = iArr.length;
@@ -188,7 +184,7 @@ function heapSort (iArr) {
     console.log(json_str);
     return json_str;
 }
-function maxHeapify (Arr, i, size, operations) {
+function maxHeapify(Arr, i, size, operations) {
     var l = 2 * i + 1, r = 2 * i + 2; // 左子节点为2i + 1，右子节点为2i + 2
     var largest = i;
     // 若子节点比节点大，则标记
@@ -211,63 +207,6 @@ function maxHeapify (Arr, i, size, operations) {
         operations.push("\"swap(" + largest.toString() + "," + i.toString() + ")\"");
         swap(Arr, i, largest);
         maxHeapify(Arr, largest, size, operations);
-    }
-}
-
-
-//希尔排序
-function shellSort (arr) {
-    var json_str = "{\"originData\":[" + arr.toString() + "],\"operations\":[";
-    var operations = []
-    for (let gap = Math.floor(arr.length / 2); gap > 0; gap = Math.floor(gap / 2)) {
-        // 内层循环与插入排序的写法基本一致，只是每次移动的步长变为 gap
-        for (var i = gap; i < arr.length; i += gap) {
-            var temp = i;
-            while (temp - gap >= 0) {
-                operations.push("\"get(" + (temp - gap).toString() + ")\"");
-                operations.push("\"get(" + (temp).toString() + ")\"");
-                if (arr[temp] < arr[temp - gap]) {
-                    swap(arr, temp, temp - gap)
-                    operations.push("\"swap(" + (temp - gap).toString() + "," + temp.toString() + ")\"");
-                }
-                else
-                    break;
-                temp -= gap;
-            }
-        }
-    }
-    json_str += operations.toString() + "]}";
-    return json_str;
-}
-
-//归并排序
-function mergeSort (arr) {
-    var json_str = "{\"originData\":[" + arr.toString() + "],\"operations\":[";
-    var operations = [];
-    for (var i = 2; (i <= arr.length) || (i / 2 < arr.length && i > arr.length); i *= 2) {
-        for (var j = 0; j < arr.length; j += i) {
-            merge(arr, j, i, operations);
-        }
-    }
-    json_str += operations.toString() + "]}";
-    return json_str;
-}
-
-function merge (arr, index, len, operations) {
-    for (var i = index + len / 2; i <= Math.min(arr.length - 1, index + len - 1); i++) {
-        var temp = i;
-        while (temp - 1 >= 0) {
-            operations.push("\"get(" + (temp - 1).toString() + ")\"");
-            operations.push("\"get(" + (temp).toString() + ")\"");
-            if (arr[temp] < arr[temp - 1]) {
-                swap(arr, temp, temp - 1);
-                operations.push("\"swap(" + (temp - 1).toString() + "," + temp.toString() + ")\"");
-            }
-            else {
-                break;
-            }
-            temp--;
-        }
     }
 }
 

@@ -13,7 +13,7 @@
         <el-input type="text" autocomplete="false" v-model="sampleForm.sample" placeholder="Sample"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="animate">Animate</el-button>
+        <el-button type="primary" @click="animate" >Animate</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -24,7 +24,10 @@
 <script>
 import sortCore from './animate/sort-core.vue'
 import { useRoute } from "vue-router";
-import { inject,watch,ref } from 'vue'
+import { inject,ref } from 'vue'
+import { sortFunction } from "./sort-functions.js"
+import {ElNotification} from "element-plus";
+
 
 
 export default {
@@ -33,6 +36,7 @@ export default {
     const route = useRoute();
     const dict = inject("dict")
     let type = ref(route.params.type)
+    let preventAnimation = ref(true)
 
     const checkSample = (rule, value, callback) => {
       const samplePattern = /^([0-9],)*$/;
@@ -51,6 +55,7 @@ export default {
     return{
       dict,
       type,
+      preventAnimation,
       rules:{
         sample:[{required:true,validator:checkSample,trigger:'blur'}],
       },
@@ -70,7 +75,19 @@ export default {
   methods:{
     animate:function () {
       this.$refs.sampleForm.validate((valid)=>{
-        // Need to use js algorithm codes
+        if(valid){
+          if (this.preventAnimation === false){
+            ElNotification({
+              title: 'Notice',
+              message: '重新播放动画或改变样例，请刷新页面！',
+              type: 'error',
+            })
+            return
+          }
+          let arr = this.sampleForm.sample.split(",").map(Number)
+          this.preventAnimation = false
+          sortCore.methods.beginDisplay(JSON.parse(sortFunction(this.type,arr)))
+        }
       })
     }
   }
