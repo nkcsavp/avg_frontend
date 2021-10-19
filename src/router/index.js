@@ -5,6 +5,7 @@ const Mine = ()=>import("../components/mine.vue")
 const Login = ()=>import("../components/login.vue")
 const Register = ()=>import("../components/register.vue")
 const SortCore = ()=>import("../components/algos/animate/sort-core.vue")
+const TreeCore = ()=>import("../components/algos/animate/tree-core.vue")
 const Sort = ()=>import("../components/algos/sort.vue")
 const SortInteractive = ()=>import("../components/algos/interactive/sort-interactive.vue")
 const Hello = ()=>import("../components/hello.vue")
@@ -49,6 +50,10 @@ const routes=[
     component: SortCore,
   },
   {
+    path: '/debug/t',
+    component: TreeCore,
+  },
+  {
     path: '/logout',
     component: LogOut,
   },
@@ -61,6 +66,10 @@ const router = createRouter({
 })
 router.beforeEach((to,from,next)=>{
 
+  if(to.fullPath.search("debug") !== -1){
+    next();
+    return;
+  }
   store.dispatch("Load");
   if(to.fullPath.search("register|login") !== -1){
     if(!store.state.isSignedIn){
