@@ -1,6 +1,6 @@
 <template>
   <el-card class="box-card">
-    本页面暂未完成。
+    本页面暂时未完成。
   </el-card>
 </template>
 
