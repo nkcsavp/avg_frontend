@@ -1,14 +1,27 @@
 <script>
 import $ from 'jquery'
 import 'jquery-color'
-import { reactive,ref } from 'vue'
+import { reactive,inject,ref } from 'vue'
 import {ElRow, ElCol} from "element-plus";
 import {ElCard} from "element-plus";
 import {onMounted} from "vue";
 export default {
   setup(){
-    let data = reactive([7,4,3,2,1,32,'x',3,3,4,5,5,'x','x','x','x'])
+    let keyframes = []
+    let save = null
+    let stop = false
+    let len = 0;
+    let disable = ref(true)
+    let data = reactive(['1','2','3','x','x','x','x','x','x','x','x','x','x','x','x','x'])
 
+    let originData = inject("originData")
+    let nowIndex = ref(0)
+    let max = ref(100)
+
+    for(let i = 0; i < originData.length; i++){
+      if(originData[i] !== 'x')
+        data[i] = originData[i]
+    }
     let nodeClasses = reactive(Array.apply(null, Array(32)).map((current,index) => {
       let hide = false;
       if ( index >= data.length || data[index] === 'x'){
@@ -19,6 +32,85 @@ export default {
         "hide-node":hide
       }
     }))
+
+    const changeAnimation = function (idx) {
+      len++
+      for(let i = 0; i < data.length; i++){
+        data[i] = keyframes[idx]['now'][i]
+      }
+      animate(save,idx,len)
+    }
+
+    const processKeyFrames = function (animation, status) {
+      keyframes.push({
+        now:status.map((item)=>item),
+        nextOP:0
+      })
+      for(let i = 0; i < animation.length; i++){
+        let op = animation[i].match(/([a-z]+)\(([\d,]+)\)/)
+        let argu = op[2].split(',').map(Number)
+        if(op[1] === "swap"){
+          let mid = status[Number(argu[0])];
+          status[Number(argu[0])] = status[Number(argu[1])];
+          status[Number(argu[1])] = mid;
+        }
+        else if(op[1] === "insert"){
+          status[Number(argu[0])] = Number(argu[1]);
+        }
+        else if(op[1] === "remove"){
+          status[Number(argu[0])] = 'x'
+        }
+        keyframes.push({
+          now:status.map((item)=>item),
+          nextOP:i+1
+        })
+      }
+    }
+
+    const animate = function(animation, startIndex, pid = -1){
+      let interval = 0
+      if(!stop) {
+        stop = true
+        interval = 2000
+      }
+      setTimeout(function (){
+        if(pid !== -1 && len !== pid){
+          return;
+        }
+        stop = false
+        let idx = startIndex
+        const id = setInterval(function () {
+          if(idx === animation.length || stop){
+            clearInterval(id)
+            stop = false
+            return
+          }
+          nowIndex.value = idx
+          let op = animation[idx].match(/([a-z]+)\(([\d,]+)\)/)
+          let argu = op[2].split(',').map(Number)
+          if(op[1] === "swap"){
+            swap(Number(argu[0]),Number(argu[1]))
+          }
+          else if(op[1] === "insert"){
+            insert(Number(argu[0]),Number(argu[1]))
+          }
+          else if(op[1] === "remove"){
+            remove(Number(argu[0]))
+          }
+          idx = idx + 1
+
+        },1500)
+      },interval)
+    }
+
+    const run = function (animation,startIndex = 0) {
+      disable.value = false;
+      save = animation
+      max.value = animation.length
+      processKeyFrames(animation, data.map((item)=>item))
+      console.log(keyframes)
+      animate(animation,startIndex)
+    }
 
     const drawLine = function (from, to, line){
       let fT = from.offsetTop  + from.offsetHeight/2
@@ -137,6 +229,7 @@ export default {
 
       animateLine.css('background-color','red')
       animateLine.css('width','6px')
+
       animateLine.fadeIn(350)
       animateNode.fadeIn(350,function () {
         nodeClasses[id]['hide-node'] = false
@@ -148,6 +241,7 @@ export default {
         },350)
       })
       animateNode.offset(pos)
+
     }
 
     const remove = function (id) {
@@ -171,59 +265,71 @@ export default {
       animateNode.offset(pos)
 
     }
+
     return{
       nodeClasses,
       data,
+      disable,
       swap,
       insert,
-      remove
+      remove,
+      run,
+      changeAnimation,
+      nowIndex,
+      max
     }
   },
   components:{
     ElCard,
     ElRow,
     ElCol
+  },
+  methods:{
+
   }
 }
 </script>
 
 <template>
-  <div>
-    <button @click="swap(1,2)">SWAP-TEST</button>
-    <button @click="insert(6,'NEW')">INSERT-TEST</button>
-    <button @click="remove(6)">REMOVE-TEST</button>
-    <el-card class="box-card">
-      <div class="display-frame">
-        <div v-for="i in [1,2,3,4,5,6,7]" :id=" 'line-' + i + '-' + (2 * i)" class="active-lines"></div>
-        <div v-for="i in [1,2,3,4,5,6,7]" :id=" 'line-' + i + '-' + (2 * i + 1)" class="active-lines"></div>
-        <div id="ID1" class="emphasize-node"> ID1 </div>
-        <div id="ID2" class="emphasize-node"> ID2 </div>
-        <el-row>
-          <el-col :span="24"><div id="node1" :class="nodeClasses[1]">{{ data[1] }}</div></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12"><div id="node2" :class="nodeClasses[2]">{{ data[2] }}</div></el-col>
-          <el-col :span="12"><div id="node3" :class="nodeClasses[3]">{{ data[3] }}</div></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6"><div id="node4" :class="nodeClasses[4]">{{ data[4] }}</div></el-col>
-          <el-col :span="6"><div id="node5" :class="nodeClasses[5]">{{ data[5] }}</div></el-col>
-          <el-col :span="6"><div id="node6" :class="nodeClasses[6]">{{ data[6] }}</div></el-col>
-          <el-col :span="6"><div id="node7" :class="nodeClasses[7]">{{ data[7] }}</div></el-col>
+  <div class="tree-core-frame">
+<!--    <button @click="swap(1,2)">SWAP-TEST</button>-->
+<!--    <button @click="insert(6,'NEW')">INSERT-TEST</button>-->
+<!--    <button @click="remove(6)">REMOVE-TEST</button>-->
+<!--    <button @click="build(1,2)">JSON-TEST</button>-->
+    <div class="display-frame">
+      <div v-for="i in [1,2,3,4,5,6,7]" :id=" 'line-' + i + '-' + (2 * i)" class="active-lines"></div>
+      <div v-for="i in [1,2,3,4,5,6,7]" :id=" 'line-' + i + '-' + (2 * i + 1)" class="active-lines"></div>
+      <div id="ID1" class="emphasize-node"> ID1 </div>
+      <div id="ID2" class="emphasize-node"> ID2 </div>
+      <el-row>
+        <el-col :span="24"><div id="node1" :class="nodeClasses[1]">{{ data[1] }}</div></el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12"><div id="node2" :class="nodeClasses[2]">{{ data[2] }}</div></el-col>
+        <el-col :span="12"><div id="node3" :class="nodeClasses[3]">{{ data[3] }}</div></el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="6"><div id="node4" :class="nodeClasses[4]">{{ data[4] }}</div></el-col>
+        <el-col :span="6"><div id="node5" :class="nodeClasses[5]">{{ data[5] }}</div></el-col>
+        <el-col :span="6"><div id="node6" :class="nodeClasses[6]">{{ data[6] }}</div></el-col>
+        <el-col :span="6"><div id="node7" :class="nodeClasses[7]">{{ data[7] }}</div></el-col>
 
-        </el-row>
-        <el-row>
-          <el-col :span="3"><div id="node8" :class="nodeClasses[8]">{{ data[8] }}</div></el-col>
-          <el-col :span="3"><div id="node9" :class="nodeClasses[9]">{{ data[9] }}</div></el-col>
-          <el-col :span="3"><div id="node10" :class="nodeClasses[10]">{{ data[10] }}</div></el-col>
-          <el-col :span="3"><div id="node11" :class="nodeClasses[11]">{{ data[11] }}</div></el-col>
-          <el-col :span="3"><div id="node12" :class="nodeClasses[12]">{{ data[12] }}</div></el-col>
-          <el-col :span="3"><div id="node13" :class="nodeClasses[13]">{{ data[13] }}</div></el-col>
-          <el-col :span="3"><div id="node14" :class="nodeClasses[14]">{{ data[14] }}</div></el-col>
-          <el-col :span="3"><div id="node15" :class="nodeClasses[15]">{{ data[15] }}</div></el-col>
-        </el-row>
-      </div>
-    </el-card>
+      </el-row>
+      <el-row>
+        <el-col :span="3"><div id="node8" :class="nodeClasses[8]">{{ data[8] }}</div></el-col>
+        <el-col :span="3"><div id="node9" :class="nodeClasses[9]">{{ data[9] }}</div></el-col>
+        <el-col :span="3"><div id="node10" :class="nodeClasses[10]">{{ data[10] }}</div></el-col>
+        <el-col :span="3"><div id="node11" :class="nodeClasses[11]">{{ data[11] }}</div></el-col>
+        <el-col :span="3"><div id="node12" :class="nodeClasses[12]">{{ data[12] }}</div></el-col>
+        <el-col :span="3"><div id="node13" :class="nodeClasses[13]">{{ data[13] }}</div></el-col>
+        <el-col :span="3"><div id="node14" :class="nodeClasses[14]">{{ data[14] }}</div></el-col>
+        <el-col :span="3"><div id="node15" :class="nodeClasses[15]">{{ data[15] }}</div></el-col>
+      </el-row>
+    </div>
+    <div class="slider-demo-block">
+      <span class="demonstration">Animation</span>
+      <el-slider :disabled="disable" v-model="nowIndex" :min="0" :max="max - 1"  show-stops :show-tooltip="false" @change="changeAnimation(nowIndex)"></el-slider>
+    </div>
   </div>
 
 </template>
@@ -281,6 +387,14 @@ export default {
 }
 .el-row{
   position: static;
+}
+.tree-core-frame{
+  padding: 40px;
+  border: 1px solid var(--el-border-color-base);
+  box-shadow:var(--el-box-shadow-light);
+  border-radius: var(--el-border-radius-base);
+  margin: 40px;
+  height: 400px;
 }
 
 

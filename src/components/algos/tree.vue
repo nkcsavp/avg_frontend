@@ -1,0 +1,125 @@
+<template>
+  <div>
+
+    <div class="title">
+      <h1>{{ dict[type] }}</h1>
+    </div>
+
+    <button @click="run()">JSON-TEST</button>
+    <tree-core ref="core"></tree-core>
+
+    <div class="sample-frame">
+      <el-form :rules="rules" :model="sampleForm" ref="sampleForm" label-position="right" label-width="120px" status-icon>
+        <el-form-item label="Sample" prop="sample">
+          <el-input type="text" autocomplete="false" v-model="sampleForm.sample" placeholder="Sample"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="animate" >Animate</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+
+  </div>
+</template>
+
+<script>
+import TreeCore from './animate/tree-core.vue'
+import { useRoute } from "vue-router";
+import {inject, provide, ref, onMounted} from 'vue'
+import {ElNotification} from "element-plus";
+
+
+
+export default {
+  name: "tree",
+  data(){
+    const route = useRoute()
+    const dict = inject("dict")
+    let type = ref(route.params.type)
+    let preventAnimation = ref(true)
+    let originData = [1,2,3,3,4,5,6,7,8,9,9,9,9]
+    provide("originData",originData)
+    const checkSample = (rule, value, callback) => {
+      const samplePattern = /^([0-9x],)*$/;
+      if (value === "") {
+        return callback(new Error('Please input test sample'))
+      }
+      setTimeout(() => {
+        if (!samplePattern.test(value + ",")) {
+          console.log(value)
+          callback(new Error('Test case need to be like this \"1,2,3,4,5\"'))
+        } else {
+          callback()
+        }
+      }, 300)
+    }
+    return{
+      dict,
+      type,
+      preventAnimation,
+      originData,
+      rules:{
+        sample:[{required:true,validator:checkSample,trigger:'blur'}],
+      },
+      sampleForm:{
+        sample: "1,3,4,5,2"
+      },
+    }
+  },
+  components: {
+    TreeCore
+  },
+  watch:{
+    '$route.params'(newval) {
+      this.type = newval.type;
+    }
+  },
+  methods:{
+    run:function (){
+      let ops = [
+        "swap(1,2)",
+        "insert(3,3)",
+        "remove(3)",
+        "swap(1,2)",
+        "insert(3,3)",
+        "remove(3)",
+        "swap(1,2)",
+        "insert(3,3)",
+        "remove(3)",
+      ]
+      this.$refs.core.run(ops)
+    },
+    animate:function () {
+      this.$refs.sampleForm.validate((valid)=>{
+        if(valid){
+          if (this.preventAnimation === false){
+            ElNotification({
+              title: 'Notice',
+              message: '重新播放动画或改变样例，请刷新页面！',
+              type: 'error',
+            })
+            return
+          }
+          let arr = this.sampleForm.sample.split(",").map(Number)
+          this.preventAnimation = false
+
+          // sortCore.methods.beginDisplay(JSON.parse(sortFunction(this.type,arr)))
+        }
+      })
+    }
+  }
+}
+</script>
+
+<style scoped>
+.sample-frame{
+  padding: 40px;
+  border: 1px solid var(--el-border-color-base);
+  box-shadow:var(--el-box-shadow-light);
+  border-radius: var(--el-border-radius-base);
+  margin: 40px;
+}
+.title{
+  padding: 20px;
+}
+</style>

@@ -7,6 +7,7 @@ const Register = ()=>import("../components/register.vue")
 const SortCore = ()=>import("../components/algos/animate/sort-core.vue")
 const TreeCore = ()=>import("../components/algos/animate/tree-core.vue")
 const Sort = ()=>import("../components/algos/sort.vue")
+const Tree = ()=>import("../components/algos/tree.vue")
 const SortInteractive = ()=>import("../components/algos/interactive/sort-interactive.vue")
 const Hello = ()=>import("../components/hello.vue")
 const LogOut = ()=>import("../components/logout.vue")
@@ -30,6 +31,10 @@ const routes=[
       {
         path: '/sort/:type',
         component:Sort,
+      },
+      {
+        path: '/tree/:type',
+        component:Tree,
       }
     ]
   },
@@ -50,10 +55,6 @@ const routes=[
     component: SortCore,
   },
   {
-    path: '/debug/t',
-    component: TreeCore,
-  },
-  {
     path: '/logout',
     component: LogOut,
   },
@@ -66,7 +67,7 @@ const router = createRouter({
 })
 router.beforeEach((to,from,next)=>{
 
-  if(to.fullPath.search("debug") !== -1){
+  if(to.fullPath.search("tree") !== -1){
     next();
     return;
   }
