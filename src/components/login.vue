@@ -2,6 +2,7 @@
   <div>
 
   <el-alert title="使用自定义排序前，请先登陆。" type="success" />
+  <el-alert title="用户名或密码错误。" type="warning" v-show="wrong"/>
   <div class="login-container">
 
     <el-form  :rules="rules" ref="loginForm" :model="loginForm" :label-position="labelPosition"
@@ -29,6 +30,7 @@ import axios from "axios"
 import router from "../router";
 import store from "../store";
 import md5 from "md5"
+import {ref} from "vue";
 export default {
   name: "Login",
   data(){
@@ -58,6 +60,7 @@ export default {
         }
       }, 300)
     }
+    let wrong = ref(false);
     store.dispatch("Finished")
     return{
       labelPosition:'right',
@@ -70,7 +73,8 @@ export default {
       rules:{
         name:[{required:true,validator:checkUserName,trigger:'blur'}],
         pwd:[{required:true,validator:checkPwd,trigger:'blur'}],
-      }
+      },
+      wrong
     };
   },
   methods:{
@@ -90,7 +94,7 @@ export default {
               router.push("/")
               store.dispatch("SignIn")
             }else{
-              this.message.error('Wrong UserName or Password');
+              this.wrong = true;
             }
             store.dispatch("Finished");
           })

@@ -7,7 +7,13 @@
           <template #title><i class="el-icon-sort">
           </i><span>排序算法</span></template>
           <el-menu-item index="/sort/interactive">自定义</el-menu-item>
-          <el-menu-item v-for="(value,key) in allTypes" :index="'/sort/' + key">{{ value }}</el-menu-item>
+          <el-menu-item v-for="(value,key) in allSortTypes" :index="'/sort/' + key">{{ value }}</el-menu-item>
+        </el-sub-menu>
+        <el-sub-menu index="2">
+          <template #title><i class="el-icon-umbrella">
+          </i><span> 树算法</span></template>
+          <el-menu-item index="/tree/interactive">自定义</el-menu-item>
+          <el-menu-item v-for="(value,key) in allTreeTypes" :index="'/tree/' + key">{{ value }}</el-menu-item>
         </el-sub-menu>
       </el-menu>
       <el-main>
@@ -32,22 +38,29 @@ export default {
     const store = useStore()
     store.dispatch("Finished")
 
-    const allTypes = {
+    const allSortTypes = {
       "quick":"快速排序",
       "bubble":"冒泡排序",
-      "radix":"基数排序",
+      // "radix":"基数排序",
       "selection":"选择排序",
       "insertion":"插入排序",
-      "shell":"希尔排序",
-      "merge":"归并排序",
+      // "shell":"希尔排序",
+      // "merge":"归并排序",
       "heap":"堆排序",
-      "counting":"计数排序",
-      "bucket":"桶排序",
+      // "counting":"计数排序",
+      // "bucket":"桶排序",
     }
-    provide("dict",allTypes)
+    const allTreeTypes = {
+      "preorder":"前序遍历",
+      "inorder":"中序遍历",
+      "postorder":"后序遍历"
+    }
+    provide("dict",allSortTypes)
+    provide("dict_tree",allTreeTypes)
 
     return{
-      allTypes,
+      allSortTypes,
+      allTreeTypes
     }
 
   }

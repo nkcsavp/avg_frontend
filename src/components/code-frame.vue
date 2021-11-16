@@ -6,8 +6,8 @@
         <el-input v-model="codeForm.sample"></el-input>
       </el-form-item>
       <el-form-item label="Mode" prop="mode">
-        <el-select v-model="codeForm.mode" placeholder="Mode:">
-          <el-option label="Sort" value="sort"></el-option>
+        <el-select v-model="codeForm.mode" placeholder="Mode">
+          <el-option :label="codeForm.mode" :value="codeForm.mode"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="Language" prop="lang">
@@ -23,7 +23,6 @@
             theme="xcode"
             style="height: 300px" />
         </div>
-
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitCode">Submit</el-button>
@@ -38,39 +37,40 @@
 
 <script>
 
-import axios from "axios";
-import sortCore from './algos/animate/sort-core.vue'
-import {ref} from "vue";
-import { VAceEditor } from 'vue3-ace-editor';
-import 'ace-builds/src-noconflict/mode-java';
-import 'ace-builds/src-noconflict/theme-xcode';
-import {useStore} from "vuex";
+import axios from "axios"
+import { VAceEditor } from 'vue3-ace-editor'
+import 'ace-builds/src-noconflict/mode-java'
+import 'ace-builds/src-noconflict/theme-xcode'
+import {useStore} from "vuex"
 
 
 export default {
   name: "code-frame",
-
+  props:[
+    'initialCode',
+    'initialMode',
+    'initialSample',
+    'specificSamplePattern'
+  ],
+  emits:[
+      'error',
+      'submitted'
+  ],
   data(){
     const store = useStore()
-    const mode = ref("sort");
-    let sample = ref("1,2,3,4,5")
-    let lang = ref("java");
-    let codes = ref("public class Main {\n" +
-        " public static void main(String[] args){\n" +
-        "   ArrayList data = new ArrayList();\n" +
-        "   data.swap(1,2);\n" +
-        "   data.swap(3,4);\n" +
-        " }\n" +
-        "}\n")
+    const mode = this.initialMode
+    let sample = this.initialSample
+    let lang = "java"
+    let codes = this.initialCode
+
     const checkSample = (rule, value, callback) => {
-      const samplePattern = /^([0-9],)*$/;
+      let samplePattern = this.specificSamplePattern
       if (value === "") {
-        return callback(new Error('Please input test sample'))
+        return callback(new Error('Please input test sample!'))
       }
       setTimeout(() => {
         if (!samplePattern.test(value + ",")) {
-          console.log(value)
-          callback(new Error('Test case need to be like this \"1,2,3,4,5\"'))
+          callback(new Error('Test case need to be like this \"' + this.initialSample + '\"!'))
         } else {
           callback()
         }
@@ -102,27 +102,30 @@ export default {
           return;
         }
         this.store.dispatch("Load")
-        this.codeForm.codes.replace("+","%2B");
+        this.codeForm.codes.replace("+","%2B")
         axios({
           url:"submit",
           params:{
             code:this.codeForm.codes,
             lang:this.codeForm.lang,
-            mode:this.codeForm.mode,
-            sample:"{" + this.codeForm.sample + "}"
+            mode:this.codeForm.mode.toLowerCase(),
+            sample:"{" + this.codeForm.sample.replaceAll('x','-1') + "}"
           }
         }).then((res)=>{
           this.store.dispatch("Finished")
           if(res.data === "TLE"){
-            alert("TLE")
+            this.$emit('error',"TLE")
           }
           else if (res.data === "TMR"){
-            alert("TMR")
+            this.$emit('error',"TMR")
           }
-          sortCore.methods.beginDisplay(res.data);
+          else{
+            document.body.scrollTop = 0;
+            res.data.originData = this.codeForm.sample.split(',');
+            this.$emit('submitted', res.data)
+          }
         })
       })
-
     }
   }
 }

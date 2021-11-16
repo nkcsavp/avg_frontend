@@ -5,8 +5,7 @@
       <h1>{{ dict[type] }}</h1>
     </div>
 
-    <button @click="run()">JSON-TEST</button>
-    <tree-core ref="core"></tree-core>
+    <tree-core ref="core" :key="type"></tree-core>
 
     <div class="sample-frame">
       <el-form :rules="rules" :model="sampleForm" ref="sampleForm" label-position="right" label-width="120px" status-icon>
@@ -25,20 +24,17 @@
 <script>
 import TreeCore from './animate/tree-core.vue'
 import { useRoute } from "vue-router";
-import {inject, provide, ref, onMounted} from 'vue'
-import {ElNotification} from "element-plus";
-
+import {inject, ref} from 'vue'
+import { treeFunction } from './tree-functions.js'
 
 
 export default {
   name: "tree",
   data(){
     const route = useRoute()
-    const dict = inject("dict")
+    const dict = inject("dict_tree")
     let type = ref(route.params.type)
-    let preventAnimation = ref(true)
-    let originData = [1,2,3,3,4,5,6,7,8,9,9,9,9]
-    provide("originData",originData)
+
     const checkSample = (rule, value, callback) => {
       const samplePattern = /^([0-9x],)*$/;
       if (value === "") {
@@ -46,23 +42,21 @@ export default {
       }
       setTimeout(() => {
         if (!samplePattern.test(value + ",")) {
-          console.log(value)
-          callback(new Error('Test case need to be like this \"1,2,3,4,5\"'))
+          callback(new Error('Test case need to be like this \"1,x,2,x,x,3,4\"'))
         } else {
           callback()
         }
       }, 300)
     }
+
     return{
       dict,
       type,
-      preventAnimation,
-      originData,
       rules:{
         sample:[{required:true,validator:checkSample,trigger:'blur'}],
       },
       sampleForm:{
-        sample: "1,3,4,5,2"
+        sample: "1,x,2,x,x,3,4"
       },
     }
   },
@@ -75,35 +69,11 @@ export default {
     }
   },
   methods:{
-    run:function (){
-      let ops = [
-        "swap(1,2)",
-        "insert(3,3)",
-        "remove(3)",
-        "swap(1,2)",
-        "insert(3,3)",
-        "remove(3)",
-        "swap(1,2)",
-        "insert(3,3)",
-        "remove(3)",
-      ]
-      this.$refs.core.run(ops)
-    },
     animate:function () {
       this.$refs.sampleForm.validate((valid)=>{
         if(valid){
-          if (this.preventAnimation === false){
-            ElNotification({
-              title: 'Notice',
-              message: '重新播放动画或改变样例，请刷新页面！',
-              type: 'error',
-            })
-            return
-          }
-          let arr = this.sampleForm.sample.split(",").map(Number)
-          this.preventAnimation = false
-
-          // sortCore.methods.beginDisplay(JSON.parse(sortFunction(this.type,arr)))
+          this.$refs.core.setData(this.sampleForm.sample.split(','))
+          this.$refs.core.run(treeFunction(this.type,this.sampleForm.sample.split(',')));
         }
       })
     }

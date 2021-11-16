@@ -9,6 +9,7 @@ const TreeCore = ()=>import("../components/algos/animate/tree-core.vue")
 const Sort = ()=>import("../components/algos/sort.vue")
 const Tree = ()=>import("../components/algos/tree.vue")
 const SortInteractive = ()=>import("../components/algos/interactive/sort-interactive.vue")
+const TreeInteractive = ()=>import("../components/algos/interactive/tree-interactive.vue")
 const Hello = ()=>import("../components/hello.vue")
 const LogOut = ()=>import("../components/logout.vue")
 
@@ -31,6 +32,10 @@ const routes=[
       {
         path: '/sort/:type',
         component:Sort,
+      },
+      {
+        path: '/tree/interactive',
+        component:TreeInteractive,
       },
       {
         path: '/tree/:type',
@@ -67,10 +72,6 @@ const router = createRouter({
 })
 router.beforeEach((to,from,next)=>{
 
-  if(to.fullPath.search("tree") !== -1){
-    next();
-    return;
-  }
   store.dispatch("Load");
   if(to.fullPath.search("register|login") !== -1){
     if(!store.state.isSignedIn){
