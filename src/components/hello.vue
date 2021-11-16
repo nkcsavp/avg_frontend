@@ -59,18 +59,30 @@ export default {
     return{
       activities: [
         {
-          content: '网站前端搭建',
-          timestamp: '2021-10-10',
+          content: '图算法模块-动画模块v2',
+          timestamp: '2021-11-10',
           type: 'primary',
           icon: 'el-icon-more',
         },
         {
-          content: '可视化模块-排序算法完成',
-          timestamp: '2021-10-09',
+          content: '树算法模块-动画模块v2',
+          timestamp: '2021-10-10',
         },
         {
-          content: '网站后端搭建完成',
-          timestamp: '2021-09-28',
+          content: '排序算法模块-动画模块v1',
+          timestamp: '2021-9-28',
+        },
+        {
+          content: '网站前端搭建',
+          timestamp: '2021-9-01',
+        },
+        {
+          content: '基于docker-compose的部署',
+          timestamp: '2021-06-23',
+        },
+        {
+          content: '网站后端搭建',
+          timestamp: '2021-05-28',
         },
       ],
     }
