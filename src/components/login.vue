@@ -1,7 +1,7 @@
 <template>
   <div>
 
-  <el-alert title="使用自定义排序前，请先登陆。" type="success" />
+  <el-alert title="使用自定义功能前，请先登陆。" type="success" />
   <el-alert title="用户名或密码错误。" type="warning" v-show="wrong"/>
   <div class="login-container">
 

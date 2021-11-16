@@ -64,8 +64,8 @@ export default {
           "insert(5,2)"
       ]
       this.$refs.core.setData(data.originData)
-      // this.$refs.core.run(data.operations)
-      this.$refs.core.run(test)
+      this.$refs.core.run(data.operations)
+      // this.$refs.core.run(test)
     },
   }
 }

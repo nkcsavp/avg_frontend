@@ -1,5 +1,6 @@
 <template>
   <div>
+    <el-alert title="用户名已经存在。" type="warning" v-show="wrong"/>
     <el-form :rules="rules" ref="registerForm" :model="registerForm" :label-position="labelPosition"
              label-width="150px" class="register-container">
       <h3 class="register-title">Register</h3>
@@ -80,6 +81,7 @@ export default {
         checkPass: '',
       },
       labelPosition: 'right',
+      wrong: false,
       rules: {
         username: [{required: true, validator: checkUserName, trigger: 'blur'}],
         pwd: [{required: true, validator: checkPwd, trigger: 'blur'}],
@@ -103,9 +105,9 @@ export default {
             if (res.data === true) {
               router.replace("/login")
             } else {
-              this.message.error('Duplicated Username')
+              this.wrong = true
             }
-            store.dispatch("Finished");
+            store.dispatch("Finished")
           })
         } else {
           return false
