@@ -1,5 +1,3 @@
-
-
 const allTypes = {
     "quick":"快速排序",
     "bubble":"冒泡排序",
@@ -211,7 +209,7 @@ function maxHeapify(Arr, i, size, operations) {
 }
 
 function swap (arr, a, b) {
-    if (a == b) { return; }
+    if (a === b) { return; }
     var c = arr[a];
     arr[a] = arr[b];
     arr[b] = c;

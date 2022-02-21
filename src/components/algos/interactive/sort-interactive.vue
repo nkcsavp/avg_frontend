@@ -13,8 +13,7 @@ import sortCore from '../animate/sort-core.vue'
 import codeFrame from '../../code-frame.vue'
 import { useRoute } from "vue-router";
 import { ref } from 'vue'
-import {ElNotification} from "_element-plus@1.1.0-beta.24@element-plus";
-import {sortFunction} from "../sort-functions";
+import {ElNotification} from 'element-plus';
 
 export default {
   name: "sort-interactive",

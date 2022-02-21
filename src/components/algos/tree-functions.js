@@ -1,7 +1,6 @@
+const retList = []
 
-let retList = []
 function treeFunction(type,data) {
-    retList = []
     if(type === "inorder"){
         inorder(data,0)
     }
@@ -16,7 +15,7 @@ function treeFunction(type,data) {
 
 function preorder(data,pos){
     if(pos >= data.length || data[pos] === 'x') return;
-    retList.push("get(" + (pos + 1) + ")");
+    retList.push("get(" + (pos) + ")");
     preorder(data,2 * pos + 1);
     preorder(data, 2 * pos + 2);
 }
@@ -24,7 +23,7 @@ function preorder(data,pos){
 function inorder(data,pos){
     if(pos >= data.length || data[pos] === 'x') return;
     inorder(data,2 * pos + 1);
-    retList.push("get(" + (pos + 1) + ")");
+    retList.push("get(" + (pos) + ")");
     inorder(data, 2 * pos + 2);
 }
 
@@ -32,7 +31,7 @@ function postorder(data,pos){
     if(pos >= data.length || data[pos] === 'x') return;
     postorder(data,2 * pos + 1);
     postorder(data, 2 * pos + 2);
-    retList.push("get(" + (pos + 1) + ")");
+    retList.push("get(" + (pos) + ")");
 }
 
 export {

@@ -1,5 +1,4 @@
 <template>
-
   <div class="code-frame" >
     <el-form ref="codeForm" :rules="rules" label-width="120px" :model="codeForm" label-position="right" status-icon>
       <el-form-item label="Sample" prop="sample">

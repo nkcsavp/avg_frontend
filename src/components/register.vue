@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-alert title="用户名已经存在。" type="warning" v-show="wrong"/>
+    <el-alert title="用户名已经存在" type="warning" v-show="wrong"/>
     <el-form :rules="rules" ref="registerForm" :model="registerForm" :label-position="labelPosition"
              label-width="150px" class="register-container">
       <h3 class="register-title">Register</h3>
@@ -129,7 +129,7 @@ export default {
 }
 
 .register-title {
-  margin: 0px auto 20px auto;
+  margin: 0 auto 20px auto;
   text-align: center;
 }
 </style>

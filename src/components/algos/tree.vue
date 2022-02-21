@@ -72,8 +72,9 @@ export default {
     animate:function () {
       this.$refs.sampleForm.validate((valid)=>{
         if(valid){
-          this.$refs.core.setData(this.sampleForm.sample.split(','))
-          this.$refs.core.run(treeFunction(this.type,this.sampleForm.sample.split(',')));
+          // console.log(this.sampleForm.sample.split(','))
+          // console.log(treeFunction(this.type,this.sampleForm.sample.split(',')))
+          this.$refs.core.run(treeFunction(this.type,this.sampleForm.sample.split(',')), this.sampleForm.sample.split(','));
         }
       })
     }

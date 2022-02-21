@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <el-container>
       <el-menu router class="el-menu-vertical-demo">
         <el-sub-menu index="1">
@@ -29,8 +28,7 @@
 
 <script>
 import { useStore } from "vuex";
-import { provide,ref } from "vue";
-import { useRoute } from "vue-router";
+import { provide } from "vue";
 
 export default {
   name: "Index",

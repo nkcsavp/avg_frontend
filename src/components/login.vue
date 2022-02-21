@@ -4,9 +4,7 @@
   <el-alert title="使用自定义功能前，请先登陆。" type="success" />
   <el-alert title="用户名或密码错误。" type="warning" v-show="wrong"/>
   <div class="login-container">
-
-    <el-form  :rules="rules" ref="loginForm" :model="loginForm" :label-position="labelPosition"
-              label-width="120px"  status-icon>
+    <el-form  :rules="rules" ref="loginForm" :model="loginForm" :label-position="labelPosition" label-width="120px"  status-icon>
       <h3 class="login-title">Log In</h3>
       <el-form-item label="Username" prop="name">
         <el-input type="text" autocomplete="false" v-model="loginForm.name"  placeholder="Username"></el-input>
@@ -19,7 +17,6 @@
         &nbsp;&nbsp;&nbsp;&nbsp;
         <el-link :underline="false" type="primary" @click="$router.push('/register')">Didn't have an account?</el-link>
       </el-form-item>
-
     </el-form>
   </div>
   </div>
@@ -117,7 +114,7 @@ export default {
   padding: 15px 35px 15px 35px;
 }
 .login-title{
-  margin: 0px auto 20px auto;
+  margin: 0 auto 20px auto;
   text-align: center;
 }
 </style>
