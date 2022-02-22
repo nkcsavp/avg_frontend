@@ -4,7 +4,7 @@ const Index = ()=>import("../components/index.vue")
 const Mine = ()=>import("../components/mine.vue")
 const Login = ()=>import("../components/login.vue")
 const Register = ()=>import("../components/register.vue")
-const SortCore = ()=>import("../components/algos/animate/sort-core.vue")
+const SortCore = ()=>import("../components/algos/animate/array-core.vue")
 const Sort = ()=>import("../components/algos/sort.vue")
 const Tree = ()=>import("../components/algos/tree.vue")
 const SortInteractive = ()=>import("../components/algos/interactive/sort-interactive.vue")
@@ -71,7 +71,7 @@ const router = createRouter({
 
 router.beforeEach((to,from,next)=>{
 
-  store.dispatch("Load");
+  // store.dispatch("Load");
   if(to.fullPath.search("register|login") !== -1){
     if(!store.state.isSignedIn){
       next();

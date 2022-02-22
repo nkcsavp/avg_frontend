@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import sortCore from '../animate/sort-core.vue'
+import sortCore from '../animate/array-core.vue'
 import codeFrame from '../../code-frame.vue'
 import { useRoute } from "vue-router";
 import { ref } from 'vue'

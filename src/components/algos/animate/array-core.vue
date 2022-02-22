@@ -28,37 +28,37 @@
   <el-row :gutter="15" :align="'middle'">
     <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
       <div class="slider-block">
-        <el-row :gutter="15" :align="'middle'">
-          <el-col :xs="12" :sm="12" :md="2" :lg="2" :xl="2">
-            <el-tooltip content="通过按钮进行逐帧移动、暂停/继续；通过调整进度条来指定动画位置" placement="top">
-              <span>Control<help theme="outline" size="16" fill="#000000" :strokeWidth="4" strokeLinejoin="miter" strokeLinecap="butt"/></span>
-            </el-tooltip>
-          </el-col>
-          <el-col :xs="12" :sm="12" :md="2" :lg="2" :xl="2">
-            <el-button-group class="ml-4">
-              <el-button type="primary" @click="pauseWrapper">
-                <right v-if="paused" theme="outline" size="24" fill="#ffffff"/>
-                <pause v-else theme="outline" size="24" fill="#ffffff"/>
-              </el-button>
-            </el-button-group>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="20" :lg="20" :xl="20">
-            <el-slider :disabled="false" v-model="nowPosition" :min="0" :max="max - 1"  show-stops :show-tooltip="false" @change="changePosition(nowPosition)"></el-slider>
-          </el-col>
+      <el-row :gutter="15" :align="'middle'">
+        <el-col :xs="12" :sm="12" :md="2" :lg="2" :xl="2">
+          <el-tooltip content="通过按钮进行逐帧移动、暂停/继续；通过调整进度条来指定动画位置" placement="top">
+            <span>Control<help theme="outline" size="16" fill="#000000" :strokeWidth="4" strokeLinejoin="miter" strokeLinecap="butt"/></span>
+          </el-tooltip>
+        </el-col>
+        <el-col :xs="12" :sm="12" :md="2" :lg="2" :xl="2">
+          <el-button-group class="ml-4">
+            <el-button type="primary" @click="pauseWrapper">
+              <right v-if="paused" theme="outline" size="24" fill="#ffffff"/>
+              <pause v-else theme="outline" size="24" fill="#ffffff"/>
+            </el-button>
+          </el-button-group>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="20" :lg="20" :xl="20">
+        <el-slider :disabled="false" v-model="nowPosition" :min="0" :max="max - 1"  show-stops :show-tooltip="false" @change="changePosition(nowPosition)"></el-slider>
+        </el-col>
 
-        </el-row>
-      </div>
+      </el-row>
+    </div>
     </el-col>
   </el-row>
 </template>
 
 <script>
 import {onMounted, onUnmounted, ref, watch} from "vue";
-import {init,destroy,setPosition,pause} from 'algomotion/type/tree'
+import {init,destroy,setPosition,pause} from 'algomotion/type/array'
 import {Pause,Right,Help} from "@icon-park/vue-next";
 
 export default {
-  name: 'tree-core',
+  name: 'array-core',
   props: {
     mvs: Array,
     dta: Array,
@@ -83,7 +83,7 @@ export default {
         width: 800,
         motion: true,
         emphasisColor: '#66b1ff',
-        emphasisTextColor: "#c6e2ff",
+        emphasisTextColor: "#fff",
         textColor: '#409eff',
         fillColor: '#b3d8ff',
         position: [nowPosition]

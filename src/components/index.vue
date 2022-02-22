@@ -15,7 +15,7 @@
           <el-menu-item v-for="(value,key) in allTreeTypes" :index="'/tree/' + key">{{ value }}</el-menu-item>
         </el-sub-menu>
       </el-menu>
-      <el-main>
+      <el-main style="padding-top: 0">
         <router-view v-slot="{ Component }">
           <transition name="fade" mode="out-in">
             <component :is="Component"/>
@@ -28,7 +28,7 @@
 
 <script>
 import { useStore } from "vuex";
-import { provide } from "vue";
+import {onMounted, provide} from "vue";
 
 export default {
   name: "Index",
@@ -37,21 +37,21 @@ export default {
     store.dispatch("Finished")
 
     const allSortTypes = {
-      "quick":"快速排序",
+      // "quick":"快速排序",
       "bubble":"冒泡排序",
       // "radix":"基数排序",
-      "selection":"选择排序",
-      "insertion":"插入排序",
+      // "selection":"选择排序",
+      // "insertion":"插入排序",
       // "shell":"希尔排序",
       // "merge":"归并排序",
-      "heap":"堆排序",
+      // "heap":"堆排序",
       // "counting":"计数排序",
       // "bucket":"桶排序",
     }
     const allTreeTypes = {
       "preorder":"前序遍历",
-      "inorder":"中序遍历",
-      "postorder":"后序遍历"
+      // "inorder":"中序遍历",
+      // "postorder":"后序遍历"
     }
     provide("dict",allSortTypes)
     provide("dict_tree",allTreeTypes)
@@ -72,7 +72,7 @@ export default {
 }
 
 .el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 250px;
-  min-height: 400px;
+  width: 200px;
+  min-height: 600px;
 }
 </style>

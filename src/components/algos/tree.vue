@@ -1,96 +1,170 @@
 <template>
   <div>
-
-    <div class="title">
-      <h1>{{ dict[type] }}</h1>
-    </div>
-
-    <tree-core ref="core" :key="type"></tree-core>
-
-    <div class="sample-frame">
-      <el-form :rules="rules" :model="sampleForm" ref="sampleForm" label-position="right" label-width="120px" status-icon>
-        <el-form-item label="Sample" prop="sample">
-          <el-input type="text" autocomplete="false" v-model="sampleForm.sample" placeholder="Sample"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="animate" >Animate</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-
+    <el-row :align="'middle'" :gutter="15">
+      <el-col :lg="6" :md="6" :sm="12" :xl="6" :xs="12">
+        <div class="title-frame">
+          <el-row :align="'middle'" :gutter="15">
+            <el-col :lg="12" :md="12" :sm="12" :xl="12" :xs="12">
+              <h1>{{ dict[type] }}</h1>
+            </el-col>
+            <transition mode="out-in" name="el-fade-in">
+              <div v-show="confirm">
+                <el-col :lg="6" :md="6" :sm="12" :xl="6" :xs="12">
+                  <el-button style="font-size: 16px;vertical-align: middle" type="primary" @click="toggle">
+                    <double-down :strokeWidth="3" fill="#fff" size="16" strokeLinecap="butt" strokeLinejoin="miter"
+                                 theme="outline"/>
+                  </el-button>
+                </el-col>
+              </div>
+            </transition>
+          </el-row>
+        </div>
+      </el-col>
+    </el-row>
+    <transition mode="out-in" name="slide-fade">
+      <div v-if="confirm">
+        <tree-core :key="type" :dta="dta" :infos="infos" :mvs='mvs'></tree-core>
+      </div>
+      <div v-else class="sample-frame">
+        <el-row :align="'middle'" :gutter="15">
+          <el-col :lg="2" :md="2" :sm="12" :xl="2" :xs="12">
+            <el-tooltip content="在此输入测试样例，点击右侧按钮确认" placement="top">
+            <span>Data<help :strokeWidth="4" fill="#000000" size="16" strokeLinecap="butt" strokeLinejoin="miter"
+                            theme="outline"/></span>
+            </el-tooltip>
+          </el-col>
+          <el-col :lg="22" :md="22" :sm="24" :xl="22" :xs="24">
+            <el-form ref="sampleFormRef" :model="sampleForm" :rules="rules" label-position="right" label-width="120px"
+                     status-icon>
+              <el-form-item style="margin: 0" label="Sample" prop="sample">
+                <el-input v-model="sampleForm.sample" autocomplete="false" placeholder="Sample" type="text">
+                  <template #append>
+                    <el-button style="font-size: 16px;vertical-align: middle" type="primary" @click="toggle">
+                      <double-down :strokeWidth="3" fill="#000000" size="16" strokeLinecap="butt" strokeLinejoin="miter"
+                                   theme="outline"/>
+                    </el-button>
+                  </template>
+                </el-input>
+              </el-form-item>
+            </el-form>
+          </el-col>
+        </el-row>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script>
-import TreeCore from './animate/tree-core.vue'
-import { useRoute } from "vue-router";
+import treeCore from './animate/tree-core.vue'
+import {useRoute} from "vue-router";
 import {inject, ref} from 'vue'
-import { treeFunction } from './tree-functions.js'
-
+import {DoubleDown, Help} from "@icon-park/vue-next";
 
 export default {
   name: "tree",
-  data(){
-    const route = useRoute()
+  data() {
+    const route = useRoute();
     const dict = inject("dict_tree")
     let type = ref(route.params.type)
-
+    let dta = ref([])
+    let mvs = ref([])
+    let infos = ref([])
+    let confirm = ref(false);
     const checkSample = (rule, value, callback) => {
-      const samplePattern = /^([0-9x],)*$/;
+      const samplePattern = /^([0-9],)*$/;
       if (value === "") {
-        return callback(new Error('Please input test sample'))
+        return callback(new Error('Test case need to be like this: \"1,2,3,4,5\"'))
       }
       setTimeout(() => {
         if (!samplePattern.test(value + ",")) {
-          callback(new Error('Test case need to be like this \"1,x,2,x,x,3,4\"'))
+          console.log(value)
+          callback(new Error('Test case need to be like this: \"1,2,3,4,5\"'))
         } else {
           callback()
         }
-      }, 300)
+      }, 100)
     }
-
-    return{
+    const sampleForm = {
+      sample: "1,3,4,5,2"
+    }
+    const rules = {
+      sample: [{required: true, validator: checkSample, trigger: 'blur'}],
+    }
+    const toggle = () => {
+      if(confirm.value){
+        confirm.value = !confirm.value;
+      }
+      else {
+        this.$refs.sampleFormRef.validate((valid)=>{
+          if(valid){
+            // Preprocess Function Here
+            const preprocess = (dta,mvs,infos) => {
+              dta.value = [7,4,5,3,6,9,1,8,Math.random()];
+              mvs.value = ["get(0)","get(1)","swap(0,1)","get(1)","get(2)","swap(1,2)","get(2)","get(3)","swap(2,3)"];
+              infos.value = ['第1行','第2行','第3行','第4行','第5行','第6行','第7行','第8行','第9行']
+            }
+            preprocess(dta,mvs,infos)
+            confirm.value = !confirm.value;
+          }
+        })
+      }
+    }
+    return {
+      confirm,
       dict,
       type,
-      rules:{
-        sample:[{required:true,validator:checkSample,trigger:'blur'}],
-      },
-      sampleForm:{
-        sample: "1,x,2,x,x,3,4"
-      },
+      sampleForm,
+      rules,
+      toggle,
+      dta,
+      mvs,
+      infos
     }
   },
   components: {
-    TreeCore
+    treeCore,
+    Help,
+    DoubleDown
   },
-  watch:{
+  watch: {
     '$route.params'(newval) {
       this.type = newval.type;
     }
   },
-  methods:{
-    animate:function () {
-      this.$refs.sampleForm.validate((valid)=>{
-        if(valid){
-          // console.log(this.sampleForm.sample.split(','))
-          // console.log(treeFunction(this.type,this.sampleForm.sample.split(',')))
-          this.$refs.core.run(treeFunction(this.type,this.sampleForm.sample.split(',')), this.sampleForm.sample.split(','));
-        }
-      })
-    }
-  }
 }
 </script>
 
 <style scoped>
-.sample-frame{
-  padding: 40px;
+.sample-frame {
+  padding: 30px;
   border: 1px solid var(--el-border-color-base);
-  box-shadow:var(--el-box-shadow-light);
+  box-shadow: var(--el-box-shadow-light);
   border-radius: var(--el-border-radius-base);
-  margin: 40px;
+  margin-top: 30px;
 }
-.title{
-  padding: 20px;
+
+.title-frame {
+  padding-left: 30px;
+  border: 1px solid var(--el-border-color-base);
+  box-shadow: var(--el-box-shadow-light);
+  border-radius: var(--el-border-radius-base);
+}
+
+.slide-fade-enter-active {
+  transition: all 0.5s cubic-bezier(0, .50, .50, 1);
+}
+
+.slide-fade-leave-active {
+  transition: all 0.5s cubic-bezier(0, .50, .50, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateY(200px);
+  opacity: 0;
+}
+
+.el-button {
+  padding: 6px 12px;
 }
 </style>
