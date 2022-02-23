@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-show="loaded">
     <el-row :align="'middle'" :gutter="15">
       <el-col :lg="6" :md="6" :sm="12" :xl="6" :xs="12">
         <div class="title-frame">
@@ -9,7 +9,7 @@
             </el-col>
             <transition mode="out-in" name="el-fade-in">
               <div v-show="confirm">
-                <el-col :lg="6" :md="6" :sm="12" :xl="6" :xs="12">
+                <el-col :lg="2" :md="2" :sm="12" :xl="2" :xs="12">
                   <el-button style="font-size: 16px;vertical-align: middle" type="primary" @click="toggle">
                     <double-down :strokeWidth="3" fill="#fff" size="16" strokeLinecap="butt" strokeLinejoin="miter"
                                  theme="outline"/>
@@ -35,7 +35,7 @@
           </el-col>
           <el-col :lg="22" :md="22" :sm="24" :xl="22" :xs="24">
             <el-form ref="sampleFormRef" :model="sampleForm" :rules="rules" label-position="right" label-width="120px"
-                     status-icon>
+                     status-icon :hide-required-asterisk="true">
               <el-form-item style="margin: 0" label="Sample" prop="sample">
                 <el-input v-model="sampleForm.sample" autocomplete="false" placeholder="Sample" type="text">
                   <template #append>
@@ -57,19 +57,22 @@
 <script>
 import treeCore from './animate/tree-core.vue'
 import {useRoute} from "vue-router";
-import {inject, ref} from 'vue'
+import {inject, onMounted, ref} from 'vue'
 import {DoubleDown, Help} from "@icon-park/vue-next";
+import {useStore} from "vuex";
 
 export default {
   name: "tree",
   data() {
-    const route = useRoute();
+    const route = useRoute()
+    const store = useStore()
     const dict = inject("dict_tree")
     let type = ref(route.params.type)
     let dta = ref([])
     let mvs = ref([])
     let infos = ref([])
     let confirm = ref(false);
+    let loaded = ref(false)
     const checkSample = (rule, value, callback) => {
       const samplePattern = /^([0-9],)*$/;
       if (value === "") {
@@ -109,8 +112,15 @@ export default {
         })
       }
     }
+    onMounted(()=>{
+      setTimeout(()=>{
+        loaded.value = true
+        store.dispatch("Finished_frame")
+      },500)
+    })
     return {
       confirm,
+      loaded,
       dict,
       type,
       sampleForm,
@@ -142,28 +152,23 @@ export default {
   border-radius: var(--el-border-radius-base);
   margin-top: 30px;
 }
-
 .title-frame {
   padding-left: 30px;
   border: 1px solid var(--el-border-color-base);
   box-shadow: var(--el-box-shadow-light);
   border-radius: var(--el-border-radius-base);
 }
-
 .slide-fade-enter-active {
   transition: all 0.5s cubic-bezier(0, .50, .50, 1);
 }
-
 .slide-fade-leave-active {
   transition: all 0.5s cubic-bezier(0, .50, .50, 1);
 }
-
 .slide-fade-enter-from,
 .slide-fade-leave-to {
   transform: translateY(200px);
   opacity: 0;
 }
-
 .el-button {
   padding: 6px 12px;
 }

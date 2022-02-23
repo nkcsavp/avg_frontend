@@ -7,10 +7,8 @@ const Register = ()=>import("../components/register.vue")
 const SortCore = ()=>import("../components/algos/animate/array-core.vue")
 const Sort = ()=>import("../components/algos/sort.vue")
 const Tree = ()=>import("../components/algos/tree.vue")
-const SortInteractive = ()=>import("../components/algos/interactive/sort-interactive.vue")
-const TreeInteractive = ()=>import("../components/algos/interactive/tree-interactive.vue")
+const Interactive = ()=>import("../components/interactive.vue")
 const Hello = ()=>import("../components/hello.vue")
-const LogOut = ()=>import("../components/logout.vue")
 
 
 import store from "../store";
@@ -25,16 +23,12 @@ const routes=[
         component: Hello
       },
       {
-        path: '/sort/interactive',
-        component:SortInteractive,
+        path: '/interactive',
+        component:Interactive,
       },
       {
         path: '/sort/:type',
         component:Sort,
-      },
-      {
-        path: '/tree/interactive',
-        component:TreeInteractive,
       },
       {
         path: '/tree/:type',
@@ -51,16 +45,12 @@ const routes=[
     component: Login,
   },
   {
+    path: '/login/:info',
+    component: Login,
+  },
+  {
     path: '/register',
     component: Register,
-  },
-  {
-    path: '/debug/s',
-    component: SortCore,
-  },
-  {
-    path: '/logout',
-    component: LogOut,
   }
 ]
 
@@ -71,7 +61,12 @@ const router = createRouter({
 
 router.beforeEach((to,from,next)=>{
 
-  // store.dispatch("Load");
+  if(to.fullPath.search("sort|tree|interactive") !== -1){
+    store.dispatch("Load_frame")
+  }
+  else{
+    store.dispatch("Load")
+  }
   if(to.fullPath.search("register|login") !== -1){
     if(!store.state.isSignedIn){
       next();
@@ -86,7 +81,7 @@ router.beforeEach((to,from,next)=>{
       next();
     }
     else{
-      router.push("/login");
+      router.push("/login?prompt=true");
       next();
     }
   }

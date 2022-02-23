@@ -1,21 +1,19 @@
 <template>
-  <div>
+  <div v-loading.fullscreen.lock="isLoading">
     <navbar :key="store.state.isSignedIn"></navbar>
-
-    <el-main v-loading="isLoading">
+    <el-main>
       <router-view v-slot="{ Component }">
-        <transition name="el-fade-in" mode="out-in">
+        <transition mode="out-in" name="el-fade-in">
           <component :is="Component"/>
         </transition>
       </router-view>
     </el-main>
   </div>
-
 </template>
 
 <script>
 import {useStore} from "vuex";
-import {computed, onMounted, reactive, ref} from "vue";
+import {computed, onMounted} from "vue";
 import navbar from "./components/navbar.vue";
 
 export default {
@@ -35,9 +33,8 @@ export default {
       isLoading,
     }
   },
-  components:{
+  components: {
     navbar
   }
-
 }
 </script>

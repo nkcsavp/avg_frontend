@@ -1,120 +1,147 @@
 <template>
   <div>
-
-  <el-alert title="使用自定义功能前，请先登陆。" type="success" />
-  <el-alert title="用户名或密码错误。" type="warning" v-show="wrong"/>
-  <div class="login-container">
-    <el-form  :rules="rules" ref="loginForm" :model="loginForm" :label-position="labelPosition" label-width="120px"  status-icon>
-      <h3 class="login-title">Log In</h3>
-      <el-form-item label="Username" prop="name">
-        <el-input type="text" autocomplete="false" v-model="loginForm.name"  placeholder="Username"></el-input>
-      </el-form-item>
-      <el-form-item label="Password " prop="pwd">
-        <el-input type="password" autocomplete="false" v-model="loginForm.pwd" placeholder="Password" show-password></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary"  @click="submitLogin">Submit</el-button>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <el-link :underline="false" type="primary" @click="$router.push('/register')">Didn't have an account?</el-link>
-      </el-form-item>
-    </el-form>
-  </div>
+    <el-alert
+        title="Error"
+        type="error"
+        :description="description"
+        show-icon
+        v-show="wrong"
+    ></el-alert>
+    <div id="icon" style="display: table;margin: 0 auto">
+        <arithmetic-one :strokeWidth="3" fill="#000000" size="128" strokeLinecap="butt" strokeLinejoin="miter"
+                        theme="outline"/>
+    </div>
+    <div class="login-container">
+      <el-form ref="loginForm" :label-position="'left'" :model="loginForm" :rules="rules" label-width="100px"
+               status-icon :hide-required-asterisk="true">
+        <h3 class="login-title">Log In</h3>
+        <el-form-item label="Email" prop="mail">
+          <el-input v-model="loginForm.mail" autocomplete="false" placeholder="学号@mail.nankai.edu.cn" type="text"></el-input>
+        </el-form-item>
+        <el-form-item  label="Password " prop="pwd">
+          <el-input v-model="loginForm.pwd" autocomplete="false" placeholder="密码" show-password
+                    type="password"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="login">Submit</el-button>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <el-link :underline="false" type="primary" @click="$router.push('/register')">Didn't have an account?
+          </el-link>
+        </el-form-item>
+      </el-form>
+    </div>
   </div>
 </template>
 
 <script>
+import {ArithmeticOne} from "@icon-park/vue-next";
 import axios from "axios"
 import router from "../router";
-import store from "../store";
-import md5 from "md5"
+import {useRoute} from "vue-router";
 import {ref} from "vue";
+import sha1 from "sha1";
+import {ElNotification} from "_element-plus@2.0.2@element-plus";
+import {useStore} from "vuex";
+
+
 export default {
   name: "Login",
-  data(){
-    const checkUserName = (rule, value, callback) => {
-      const userNamePattern = /^[a-zA-Z0-9]{4,16}$/;
-      if (value === "") {
-        return callback(new Error('Please input your username'))
-      }
+  components: {
+    ArithmeticOne,
+  },
+  data() {
+    const store = useStore()
+    const route = useRoute()
+    let wrong = ref(false);
+    let description = ref(null);
+    const checkMail = (rule, value, callback) => {
+      const mailPattern1 = /^\w+([-+.]\w+)*@mail.nankai.edu.cn$/;
+      const mailPattern2 = /^\w+([-+.]\w+)*@nankai.edu.cn$/;
       setTimeout(() => {
-        if (!userNamePattern.test(value)) {
-          callback(new Error('Need 4~16 Characters or Digits.'))
-        } else {
+        if (mailPattern1.test(value) || mailPattern2.test(value)) {
           callback()
+        } else {
+          callback(new Error('请输入您的邮箱'))
         }
-      }, 300)
+      }, 100)
     }
     const checkPwd = (rule, value, callback) => {
-      const pwdPattern = /^[a-zA-Z0-9]{8,}$/;
-      if (value === "") {
-        return callback(new Error('Please input your username'))
-      }
+      const pwdPattern = /^[a-zA-Z0-9]{6,16}$/;
       setTimeout(() => {
         if (!pwdPattern.test(value)) {
-          callback(new Error('Need At Least 8 Characters or Digits.'))
+          callback(new Error('密码为6-16位字母或数字'))
         } else {
           callback()
         }
-      }, 300)
+      }, 100)
     }
-    let wrong = ref(false);
-    store.dispatch("Finished")
-    return{
-      labelPosition:'right',
-      loginForm:{
-        name:'',
-        pwd:'',
-      },
-      checkUserName,
-      checkPwd,
-      rules:{
-        name:[{required:true,validator:checkUserName,trigger:'blur'}],
-        pwd:[{required:true,validator:checkPwd,trigger:'blur'}],
-      },
-      wrong
-    };
-  },
-  methods:{
-    submitLogin() {
+    const login = ()=>{
       this.$refs.loginForm.validate((valid) => {
-        store.dispatch("Load");
         if (valid) {
+          store.dispatch("Load");
           axios({
-            async:false,
-            url:"LogInServlet",
-            params:{
-              name:this.loginForm.name,
-              pwd:md5(this.loginForm.pwd)
+            async: false,
+            url: "/login",
+            params: {
+              mail: this.loginForm.mail,
+              pwd: sha1(this.loginForm.pwd)
+              // pwd: this.loginForm.pwd
             }
-          }).then((res)=> {
-            if(res.data === true){
-              router.push("/")
-              store.dispatch("SignIn")
-            }else{
-              this.wrong = true;
-            }
+          }).then((res) => {
+            ElNotification({
+              title: 'Success',
+              message: res.data['msg'],
+              type: 'success',
+            })
+            store.dispatch("SignIn")
+            router.push("/")
+          }).catch((err)=>{
+            wrong.value = true
+            description.value = err.response.data['msg']
+            console.log(err.response.data)
             store.dispatch("Finished");
           })
-        }else {
+        } else {
           return false;
         }
       })
-    },
+    }
+    store.dispatch("Finished")
+    if(route.query.prompt !== undefined){
+      ElNotification({
+        title: 'Info',
+        message: 'You need to Log In Before using DIY mode',
+        type: 'info',
+      })
+    }
+
+    return {
+      login,
+      wrong,
+      description,
+      loginForm: {
+        mail: '',
+        pwd: '',
+      },
+      rules: {
+        mail: [{required: true, validator: checkMail, trigger: 'blur'}],
+        pwd: [{required: true, validator: checkPwd, trigger: 'blur'}],
+      },
+    };
   }
 }
 </script>
 
-<style >
-.login-container{
-  box-shadow:var(--el-box-shadow-light);
-  border-radius: var(--el-border-radius-base);
-  background-clip: padding-box;
-  margin:180px auto;
-  width:400px;
-  padding: 15px 35px 15px 35px;
+<style>
+.login-container {
+  margin: 0 auto;
+  display: table;
 }
-.login-title{
-  margin: 0 auto 20px auto;
-  text-align: center;
+#icon{
+  padding: 50px;
+}
+.el-alert{
+  width: 50%;
+  margin: 0 auto;
 }
 </style>

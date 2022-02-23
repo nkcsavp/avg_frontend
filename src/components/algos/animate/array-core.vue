@@ -1,6 +1,6 @@
 <template>
   <el-row :gutter="15" :align="'middle'">
-    <el-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18">
+    <el-col :xs="24" :sm="24" :md="enableInfo?18:24" :lg="enableInfo?18:24" :xl="enableInfo?18:24">
       <div class="array-core-frame">
         <el-tooltip content="动画展示区域" placement="top">
           <span>Animation<help theme="outline" size="16" fill="#000000" :strokeWidth="4" strokeLinejoin="miter" strokeLinecap="butt"/></span>
@@ -8,7 +8,7 @@
         <canvas ref="canvas"></canvas>
       </div>
     </el-col>
-    <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+    <el-col v-if="enableInfo" :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
       <div class="array-info-frame">
         <el-tooltip content="信息展示区域" placement="top">
           <span>Info<help theme="outline" size="16" fill="#000000" :strokeWidth="4" strokeLinejoin="miter" strokeLinecap="butt"/></span>
@@ -45,7 +45,6 @@
         <el-col :xs="24" :sm="24" :md="20" :lg="20" :xl="20">
         <el-slider :disabled="false" v-model="nowPosition" :min="0" :max="max - 1"  show-stops :show-tooltip="false" @change="changePosition(nowPosition)"></el-slider>
         </el-col>
-
       </el-row>
     </div>
     </el-col>
@@ -55,7 +54,7 @@
 <script>
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import {init,destroy,setPosition,pause} from 'algomotion/type/array'
-import {Pause,Right,Help} from "@icon-park/vue-next";
+import {Pause, Right, Help} from "@icon-park/vue-next";
 
 export default {
   name: 'array-core',
@@ -63,6 +62,7 @@ export default {
     mvs: Array,
     dta: Array,
     infos: Array,
+    enableInfo: Boolean
   },
   components:{
     Pause,
@@ -74,13 +74,14 @@ export default {
     let scrollbar = ref();
     let nowPosition = ref(0);
     let max = props.mvs.length;
-    let paused = ref(false);
+    let paused = ref(true);
+    let enableInfo = props.enableInfo;
     let infos = props.infos;
     onMounted(()=>{
       let set = {
         hidpi: true,
         height: 250,
-        width: 800,
+        width: document.querySelector("canvas").offsetWidth,
         motion: true,
         emphasisColor: '#66b1ff',
         emphasisTextColor: "#fff",
@@ -93,9 +94,12 @@ export default {
         'mvs': props.mvs
       }
       init(set, info, canvas.value)
-      watch(nowPosition,(now,past)=>{
-        scrollbar.value.setScrollTop((now - 1) * 85)
-      })
+      pause(true)
+      if(enableInfo) {
+        watch(nowPosition, (now, past) => {
+          scrollbar.value.setScrollTop((now - 1) * 87)
+        })
+      }
     })
     onUnmounted(()=>{
       destroy()
@@ -115,6 +119,7 @@ export default {
       max,
       paused,
       infos,
+      enableInfo,
       changePosition,
       pauseWrapper
     }
@@ -170,5 +175,9 @@ export default {
   border: 1px solid var(--el-border-color-base);
   box-shadow: var(--el-box-shadow-light);
   border-radius: var(--el-border-radius-base);
+}
+canvas{
+  display: block;
+  width: 100% !important;
 }
 </style>
