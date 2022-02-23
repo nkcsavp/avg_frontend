@@ -1,19 +1,20 @@
 <template>
-  <div class="code-frame" v-loading="load">
+  <div v-loading="load" class="code-frame">
     <el-alert
-        title="Error"
-        type="error"
+        v-show="wrong"
         :description="description"
         show-icon
-        v-show="wrong"
+        title="Error"
+        type="error"
     ></el-alert>
-    <el-form ref="codeForm" :model="codeForm" :rules="rules" label-position="left" label-width="100px" status-icon :hide-required-asterisk="true">
+    <el-form ref="codeForm" :hide-required-asterisk="true" :model="codeForm" :rules="rules" label-position="left" label-width="100px"
+             status-icon>
       <el-tooltip content="选择运行模式" placement="left" trigger="hover">
         <el-form-item label="Mode" prop="mode">
           <el-select v-model="codeForm.mode" placeholder="Mode">
             <el-option label="Array" value="array"></el-option>
             <el-option label="Tree" value="tree"></el-option>
-<!--            <el-option label="Graph" value="graph"></el-option>-->
+            <!--            <el-option label="Graph" value="graph"></el-option>-->
           </el-select>
         </el-form-item>
       </el-tooltip>
@@ -70,32 +71,32 @@ export default {
   },
   data() {
     const config = {
-      'java':{
-        'tree':"BinaryTree bt = new BinaryTree();\n" +
+      'java': {
+        'tree': "BinaryTree bt = new BinaryTree();\n" +
             "BinaryTreeNode root = bt.getRoot();\n",
-        'array':"DataList data = new DataList();\n",
+        'array': "DataList data = new DataList();\n",
       },
-      'cpp':{
-        'array':"int main(){\n" +
+      'cpp': {
+        'array': "int main(){\n" +
             "\tDataList data;\n" +
             "}",
-        'tree':"int main(){\n" +
+        'tree': "int main(){\n" +
             "\tBinaryTree binaryTree;\n" +
             "\tBinaryTreeNode* root = binaryTree.getRoot();\n" +
             "}"
       },
-      'python':{
+      'python': {
         'array': "data = DataList()\n",
         'tree': "bt = BinaryTree()\n" +
             "root = bt.root\n"
       },
-      'array':{
-        sample:'5,4,3,2,1',
-        reg:/^([0-9],)*[0-9]$/
+      'array': {
+        sample: '5,4,3,2,1',
+        reg: /^([0-9],)*[0-9]$/
       },
-      'tree':{
-        sample:'1,2,3,4,x,6',
-        reg:/^([0-9x],)*[0-9x]$/
+      'tree': {
+        sample: '1,2,3,4,x,6',
+        reg: /^([0-9x],)*[0-9x]$/
       }
     }
 
@@ -105,14 +106,14 @@ export default {
     let load = ref(false)
     let sample = ref(config[mode.value].sample)
     let codes = ref(config[lang.value][mode.value])
-    if(this.initCode !== null){
+    if (this.initCode !== null) {
       codes.value = this.initCode
     }
     let wrong = ref(false);
     let description = ref(null);
     let validMessageReg = /^(([\w]+\((([\d]+,)*[\d]+)*\)):)*[\w]+\((([\d]+,)*[\d]+)*\)$/
 
-    const submit = ()=>{
+    const submit = () => {
       this.$refs.codeForm.validate((valid) => {
         if (!valid) {
           return;
@@ -121,36 +122,35 @@ export default {
         axios({
           url: "submit?lang=" + this.codeForm.lang + "&mode=" + this.codeForm.mode + "&sample=" + this.codeForm.sample.replaceAll('x', '-1'),
           method: 'POST',
-          headers: { 'content-type': 'text/plain' },
+          headers: {'content-type': 'text/plain'},
           data: this.codeForm.codes
         }).then((res) => {
           load.value = false
-          if(res.data['msg'] === ""){
+          if (res.data['msg'] === "") {
             wrong.value = true
             description.value = "Code does not Produced Any Moves"
             return;
-          }else if(!validMessageReg.test(res.data['msg'])){
+          } else if (!validMessageReg.test(res.data['msg'])) {
             wrong.value = true
             description.value = "Wrong Animation Format, Do not print to stdout."
             return;
           }
-          const ret = [sample.value.split(','),res.data['msg'].split(':'),mode.value,codes.value]
-          this.$emit('submitted',ret)
-        }).catch((err)=>{
+          const ret = [sample.value.split(','), res.data['msg'].split(':'), mode.value, codes.value]
+          this.$emit('submitted', ret)
+        }).catch((err) => {
           load.value = false
-          if(err.response.status === 403){
+          if (err.response.status === 403) {
             ElNotification({
               title: 'Error',
               message: err.response.data['msg'],
               type: 'error',
             })
+            store.dispatch("LogOut")
             router.push("/login")
-          }
-          else if(err.response.status === 400){
+          } else if (err.response.status === 400) {
             wrong.value = true
             description.value = err.response.data['msg']
-          }
-          else{
+          } else {
             wrong.value = true
             description.value = "Unknown Error"
           }
@@ -171,11 +171,11 @@ export default {
       }, 100)
     }
 
-    watch(mode,(newMode,old)=>{
+    watch(mode, (newMode, old) => {
       sample.value = config[mode.value].sample
       codes.value = config[lang.value][mode.value]
     })
-    watch(lang,(newLang,old)=>{
+    watch(lang, (newLang, old) => {
       codes.value = config[lang.value][mode.value]
     })
     return {
@@ -219,7 +219,7 @@ export default {
   box-shadow: var(--el-box-shadow-light);
 }
 
-.el-alert{
+.el-alert {
   margin-bottom: 15px;
 }
 </style>

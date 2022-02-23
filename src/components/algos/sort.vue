@@ -8,14 +8,14 @@
               <h1>{{ dict[type] }}</h1>
             </el-col>
             <transition mode="out-in" name="el-fade-in">
-            <div v-show="confirm">
-              <el-col :lg="4" :md="4" :sm="12" :xl="4" :xs="12">
-                <el-button style="font-size: 16px;vertical-align: middle" type="primary" @click="toggle">
-                  <double-down :strokeWidth="3" fill="#fff" size="16" strokeLinecap="butt" strokeLinejoin="miter"
-                               theme="outline"/>
-                </el-button>
-              </el-col>
-            </div>
+              <div v-show="confirm">
+                <el-col :lg="4" :md="4" :sm="12" :xl="4" :xs="12">
+                  <el-button style="font-size: 16px;vertical-align: middle" type="primary" @click="toggle">
+                    <double-down :strokeWidth="3" fill="#fff" size="16" strokeLinecap="butt" strokeLinejoin="miter"
+                                 theme="outline"/>
+                  </el-button>
+                </el-col>
+              </div>
             </transition>
           </el-row>
         </div>
@@ -23,7 +23,7 @@
     </el-row>
     <transition mode="out-in" name="slide-fade">
       <div v-if="confirm">
-        <sort-core :key="type" :dta="dta" :infos="infos" :mvs='mvs' :enable-info="true"></sort-core>
+        <sort-core :key="type" :dta="dta" :enable-info="true" :infos="infos" :mvs='mvs'></sort-core>
       </div>
       <div v-else class="sample-frame">
         <el-row :align="'middle'" :gutter="15">
@@ -34,9 +34,9 @@
             </el-tooltip>
           </el-col>
           <el-col :lg="22" :md="22" :sm="24" :xl="22" :xs="24">
-            <el-form ref="sampleFormRef" :model="sampleForm" :rules="rules" label-position="right" label-width="120px"
-                     status-icon :hide-required-asterisk="true">
-              <el-form-item style="margin: 0" label="Sample" prop="sample">
+            <el-form ref="sampleFormRef" :hide-required-asterisk="true" :model="sampleForm" :rules="rules" label-position="right"
+                     label-width="120px" status-icon>
+              <el-form-item label="Sample" prop="sample" style="margin: 0">
                 <el-input v-model="sampleForm.sample" autocomplete="false" placeholder="Sample" type="text">
                   <template #append>
                     <el-button style="font-size: 16px;vertical-align: middle" type="primary" @click="toggle">
@@ -94,29 +94,28 @@ export default {
       sample: [{required: true, validator: checkSample, trigger: 'blur'}],
     }
     const toggle = () => {
-      if(confirm.value){
+      if (confirm.value) {
         confirm.value = !confirm.value;
-      }
-      else {
-        this.$refs.sampleFormRef.validate((valid)=>{
-          if(valid){
+      } else {
+        this.$refs.sampleFormRef.validate((valid) => {
+          if (valid) {
             // Preprocess Function Here
-            const preprocess = (dta,mvs,infos) => {
-              dta.value = [7,4,5,3,6,9,1,8,Math.random()];
-              mvs.value = ["get(0)","get(1)","swap(0,1)","get(1)","get(2)","swap(1,2)","get(2)","get(3)","swap(2,3)"];
-              infos.value = ['第1行','第2行','第3行','第4行','第5行','第6行','第7行','第8行','第9行']
+            const preprocess = (dta, mvs, infos) => {
+              dta.value = [7, 4, 5, 3, 6, 9, 1, 8, Math.random()];
+              mvs.value = ["get(0)", "get(1)", "swap(0,1)", "get(1)", "get(2)", "swap(1,2)", "get(2)", "get(3)", "swap(2,3)"];
+              infos.value = ['第1行', '第2行', '第3行', '第4行', '第5行', '第6行', '第7行', '第8行', '第9行']
             }
-            preprocess(dta,mvs,infos)
+            preprocess(dta, mvs, infos)
             confirm.value = !confirm.value;
           }
         })
       }
     }
-    onMounted(()=>{
-      setTimeout(()=>{
+    onMounted(() => {
+      setTimeout(() => {
         loaded.value = true
         store.dispatch("Finished_frame")
-      },500)
+      }, 500)
     })
     return {
       confirm,
@@ -152,23 +151,28 @@ export default {
   border-radius: var(--el-border-radius-base);
   margin-top: 30px;
 }
+
 .title-frame {
   padding-left: 30px;
   border: 1px solid var(--el-border-color-base);
   box-shadow: var(--el-box-shadow-light);
   border-radius: var(--el-border-radius-base);
 }
+
 .slide-fade-enter-active {
   transition: all 0.5s cubic-bezier(0, .50, .50, 1);
 }
+
 .slide-fade-leave-active {
   transition: all 0.5s cubic-bezier(0, .50, .50, 1);
 }
+
 .slide-fade-enter-from,
 .slide-fade-leave-to {
   transform: translateY(200px);
   opacity: 0;
 }
+
 .el-button {
   padding: 6px 12px;
 }

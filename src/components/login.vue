@@ -1,24 +1,25 @@
 <template>
   <div>
     <el-alert
-        title="Error"
-        type="error"
+        v-show="wrong"
         :description="description"
         show-icon
-        v-show="wrong"
+        title="Error"
+        type="error"
     ></el-alert>
     <div id="icon" style="display: table;margin: 0 auto">
-        <arithmetic-one :strokeWidth="3" fill="#000000" size="128" strokeLinecap="butt" strokeLinejoin="miter"
-                        theme="outline"/>
+      <arithmetic-one :strokeWidth="3" fill="#000000" size="128" strokeLinecap="butt" strokeLinejoin="miter"
+                      theme="outline"/>
     </div>
     <div class="login-container">
-      <el-form ref="loginForm" :label-position="'left'" :model="loginForm" :rules="rules" label-width="100px"
-               status-icon :hide-required-asterisk="true">
+      <el-form ref="loginForm" :hide-required-asterisk="true" :label-position="'left'" :model="loginForm" :rules="rules"
+               label-width="100px" status-icon>
         <h3 class="login-title">Log In</h3>
         <el-form-item label="Email" prop="mail">
-          <el-input v-model="loginForm.mail" autocomplete="false" placeholder="学号@mail.nankai.edu.cn" type="text"></el-input>
+          <el-input v-model="loginForm.mail" autocomplete="false" placeholder="学号@mail.nankai.edu.cn"
+                    type="text"></el-input>
         </el-form-item>
-        <el-form-item  label="Password " prop="pwd">
+        <el-form-item label="Password " prop="pwd">
           <el-input v-model="loginForm.pwd" autocomplete="false" placeholder="密码" show-password
                     type="password"></el-input>
         </el-form-item>
@@ -75,7 +76,7 @@ export default {
         }
       }, 100)
     }
-    const login = ()=>{
+    const login = () => {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           store.dispatch("Load");
@@ -95,7 +96,7 @@ export default {
             })
             store.dispatch("SignIn")
             router.push("/")
-          }).catch((err)=>{
+          }).catch((err) => {
             wrong.value = true
             description.value = err.response.data['msg']
             console.log(err.response.data)
@@ -107,7 +108,7 @@ export default {
       })
     }
     store.dispatch("Finished")
-    if(route.query.prompt !== undefined){
+    if (route.query.prompt !== undefined) {
       ElNotification({
         title: 'Info',
         message: 'You need to Log In Before using DIY mode',
@@ -137,10 +138,12 @@ export default {
   margin: 0 auto;
   display: table;
 }
-#icon{
+
+#icon {
   padding: 50px;
 }
-.el-alert{
+
+.el-alert {
   width: 50%;
   margin: 0 auto;
 }

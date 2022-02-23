@@ -5,11 +5,11 @@
 </template>
 
 <script>
-  import {useStore} from "vuex";
+import {useStore} from "vuex";
 
-  export default {
-    setup(){
-      useStore().dispatch("Finished")
+export default {
+  setup() {
+    useStore().dispatch("Finished")
     }
   }
 </script>
