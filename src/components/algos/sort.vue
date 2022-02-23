@@ -10,7 +10,7 @@
             <transition mode="out-in" name="el-fade-in">
               <div v-show="confirm">
                 <el-col :lg="4" :md="4" :sm="12" :xl="4" :xs="12">
-                  <el-button style="font-size: 16px;vertical-align: middle" type="primary" @click="toggle">
+                  <el-button style="font-size: 16px" type="primary" @click="toggle">
                     <double-down :strokeWidth="3" fill="#fff" size="16" strokeLinecap="butt" strokeLinejoin="miter"
                                  theme="outline"/>
                   </el-button>
@@ -39,7 +39,7 @@
               <el-form-item label="Sample" prop="sample" style="margin: 0">
                 <el-input v-model="sampleForm.sample" autocomplete="false" placeholder="Sample" type="text">
                   <template #append>
-                    <el-button style="font-size: 16px;vertical-align: middle" type="primary" @click="toggle">
+                    <el-button style="font-size: 16px" type="primary" @click="toggle">
                       <double-down :strokeWidth="3" fill="#000000" size="16" strokeLinecap="butt" strokeLinejoin="miter"
                                    theme="outline"/>
                     </el-button>

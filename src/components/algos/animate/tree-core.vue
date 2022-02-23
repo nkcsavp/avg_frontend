@@ -80,7 +80,7 @@ export default {
     let scrollbar = ref();
     let nowPosition = ref(0);
     let max = props.mvs.length;
-    let paused = ref(true);
+    let paused = ref(false);
     let infos = props.infos;
     let enableInfo = props.enableInfo;
     onMounted(() => {
@@ -100,7 +100,7 @@ export default {
         'mvs': props.mvs
       }
       init(set, info, canvas.value)
-      pause(true)
+      pause(paused.value)
       if (enableInfo) {
         watch(nowPosition, (now, past) => {
           scrollbar.value.setScrollTop((now - 1) * 87)

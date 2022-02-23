@@ -82,7 +82,8 @@ export default {
   min-height: 600px;
 }
 
-.el-sub-menu__title .i-icon svg, .el-menu-item .i-icon svg {
+.i-icon,.el-menu-item .i-icon svg,.el-sub-menu__title .i-icon svg{
   vertical-align: middle !important;
 }
+
 </style>
