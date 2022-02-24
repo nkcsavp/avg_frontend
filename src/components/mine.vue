@@ -113,7 +113,7 @@
             </div>
           </el-col>
           <el-col :lg="4" :md="4" :sm="8" :xl="4" :xs="8">
-            <el-button :disabled="data.length === 0" style="width:200px" type="primary" @click="getData(page + 1)">Next
+            <el-button :disabled="data.length < 5" style="width:200px" type="primary" @click="getData(page + 1)">Next
             </el-button>
           </el-col>
         </el-row>
@@ -253,7 +253,7 @@ export default {
       document.body.removeChild(txa)
       ElNotification({
         title: 'Success',
-        message: "Code Copy Successful",
+        message: "代码复制成功",
         type: 'success',
       })
     }

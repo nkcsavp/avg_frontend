@@ -49,7 +49,7 @@ export default {
       const pwdPattern = /^[a-zA-Z0-9]{6,16}$/;
       setTimeout(() => {
         if (!pwdPattern.test(value)) {
-          callback(new Error('密码为6-16位字母或数字'))
+          callback(new Error('[注意]密码为6-16位字母或数字'))
         } else {
           callback()
         }

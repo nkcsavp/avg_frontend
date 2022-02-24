@@ -7,8 +7,9 @@
           <h2>Interactive Algorithm Visualization Platform</h2>
           <el-link href="https://nkcsavp.github.io/">
             <home :strokeWidth="3" fill="#000000" size="22" strokeLinecap="butt" strokeLinejoin="miter"
-                  theme="outline"/>&nbsp;Home Page
+                  theme="outline"/>&nbsp;Home Page & Docs
           </el-link>
+          <br>
           <br>
           <el-link href="https://github.com/nkcsavp">
             <github :strokeWidth="3" fill="#000000" size="22" strokeLinecap="butt" strokeLinejoin="miter"

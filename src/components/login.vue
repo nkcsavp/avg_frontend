@@ -16,7 +16,7 @@
                label-width="100px" status-icon>
         <h3 class="login-title">Log In</h3>
         <el-form-item label="Email" prop="mail">
-          <el-input v-model="loginForm.mail" autocomplete="false" placeholder="学号@mail.nankai.edu.cn"
+          <el-input v-model="loginForm.mail" autocomplete="false" placeholder="abc@abc.edu.cn"
                     type="text"></el-input>
         </el-form-item>
         <el-form-item label="Password " prop="pwd">
@@ -58,13 +58,12 @@ export default {
     let wrong = ref(false);
     let description = ref(null);
     const checkMail = (rule, value, callback) => {
-      const mailPattern1 = /^\w+([-+.]\w+)*@mail.nankai.edu.cn$/;
-      const mailPattern2 = /^\w+([-+.]\w+)*@nankai.edu.cn$/;
+      const mailPattern1 = /^\w+([-+.]\w+)*@[\w\.]+.edu.cn$/;
       setTimeout(() => {
-        if (mailPattern1.test(value) || mailPattern2.test(value)) {
+        if (mailPattern1.test(value)) {
           callback()
         } else {
-          callback(new Error('请输入您的邮箱'))
+          callback(new Error('[注意]请输入正确的教育邮箱'))
         }
       }, 100)
     }
@@ -72,7 +71,7 @@ export default {
       const pwdPattern = /^[a-zA-Z0-9]{6,16}$/;
       setTimeout(() => {
         if (!pwdPattern.test(value)) {
-          callback(new Error('密码为6-16位字母或数字'))
+          callback(new Error('[注意]密码为6-16位字母或数字'))
         } else {
           callback()
         }
@@ -112,7 +111,7 @@ export default {
     if (route.query.prompt !== undefined) {
       ElNotification({
         title: 'Info',
-        message: 'You need to Log In Before using DIY mode',
+        message: '使用自定义模式前需要登录',
         type: 'info',
       })
     }

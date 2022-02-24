@@ -76,19 +76,16 @@ export default {
     let loaded = ref(false);
     const checkSample = (rule, value, callback) => {
       const samplePattern = /^([0-9],)*[0-9]$/;
-      if (value === "") {
-        return callback(new Error('Test case need to be like this: \"1,2,3,4,5\"'))
-      }
       setTimeout(() => {
         if (!samplePattern.test(value)) {
-          callback(new Error('Test case need to be like this: \"1,2,3,4,5\"'))
+          callback(new Error('[注意]测试样例格式: \"7,6,2,4,3,1,5\"'))
         } else {
           callback()
         }
       }, 100)
     }
     const sampleForm = {
-      sample: "1,3,4,5,2"
+      sample: "7,6,2,4,3,1,5"
     }
     const rules = {
       sample: [{required: true, validator: checkSample, trigger: 'blur'}],

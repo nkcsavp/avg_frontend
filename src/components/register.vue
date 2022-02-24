@@ -16,7 +16,7 @@
              class="register-container" label-width="100px">
       <h3 class="register-title">Register</h3>
       <el-form-item label="Email" prop="mail">
-        <el-input v-model="registerForm.mail" autocomplete="false" placeholder="学号@mail.nankai.edu.cn"
+        <el-input v-model="registerForm.mail" autocomplete="false" placeholder="abc@abc.edu.cn"
                   type="text">
           <template #append>
             <el-tooltip :content="verifyCountDown" placement="top">
@@ -92,7 +92,7 @@ export default {
           }).then((res) => {
             ElNotification({
               title: 'Success',
-              message: '验证码已发往邮箱，请查收',
+              message: '验证已发送，请查收',
               type: 'success',
             })
           }).catch((err) => {
@@ -137,13 +137,12 @@ export default {
       })
     }
     const checkMail = (rule, value, callback) => {
-      const mailPattern1 = /^\w+([-+.]\w+)*@mail.nankai.edu.cn$/;
-      const mailPattern2 = /^\w+([-+.]\w+)*@nankai.edu.cn$/;
+      const mailPattern1 = /^\w+([-+.]\w+)*@[\w\.]+.edu.cn$/;
       setTimeout(() => {
-        if (mailPattern1.test(value) || mailPattern2.test(value)) {
+        if (mailPattern1.test(value)) {
           callback()
         } else {
-          callback(new Error('请输入您的邮箱'))
+          callback(new Error('[注意]请输入正确的教育邮箱'))
         }
       }, 100)
     }
@@ -151,7 +150,7 @@ export default {
       const pwdPattern = /^[a-zA-Z0-9]{6,16}$/;
       setTimeout(() => {
         if (!pwdPattern.test(value)) {
-          callback(new Error('密码为6-16位字母或数字'))
+          callback(new Error('[注意]密码为6-16位字母或数字'))
         } else {
           callback()
         }
@@ -159,9 +158,9 @@ export default {
     }
     const validatePwd = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请再次输入密码'))
+        callback(new Error('[注意]请再次输入密码'))
       } else if (value !== this.registerForm.pwd) {
-        callback(new Error('两次输入密码不一致'))
+        callback(new Error('[错误]两次输入密码不一致'))
       } else {
         callback()
       }
@@ -169,11 +168,11 @@ export default {
     const checkVerify = (rule, value, callback) => {
       const verifyPattern = /^[0-9]{6}$/;
       if (value === '') {
-        callback(new Error('请输入邮箱验证码'))
+        callback(new Error('[注意]请输入邮箱验证码'))
       }
       setTimeout(() => {
         if (!verifyPattern.test(value)) {
-          callback(new Error('邮箱验证码格式错误'))
+          callback(new Error('[错误]邮箱验证码格式错误'))
         } else {
           callback()
         }

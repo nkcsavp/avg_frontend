@@ -76,12 +76,9 @@ export default {
     let loaded = ref(false)
     const checkSample = (rule, value, callback) => {
       const samplePattern = /^([0-9x],)*[0-9x]$/;
-      if (value === "") {
-        return callback(new Error('Test case need to be like this: \"1,2,3,4,x,6\"'))
-      }
       setTimeout(() => {
         if (!samplePattern.test(value)) {
-          callback(new Error('Test case need to be like this: \"1,2,3,4,x,6\"'))
+          callback(new Error('[注意]测试样例格式: \"1,2,3,4,x,6\"'))
         } else {
           callback()
         }

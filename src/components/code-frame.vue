@@ -100,7 +100,7 @@ export default {
             "root = bt.root\n"
       },
       'array': {
-        sample: '5,4,3,2,1',
+        sample: '7,6,2,4,3,1,5',
         reg: /^([0-9],)*[0-9]$/
       },
       'tree': {
@@ -118,7 +118,6 @@ export default {
     let codes = ref(this.initCode?this.initCode:config[lang.value][mode.value])
     let wrong = ref(false);
     let description = ref(null);
-    let validMessageReg = /^(([\w]+\((([\d]+,)*[\d]+)*\)):)*[\w]+\((([\d]+,)*[\d]+)*\)$/
 
     const submit = () => {
       this.$refs.codeForm.validate((valid) => {
@@ -133,15 +132,6 @@ export default {
           data: this.codeForm.codes
         }).then((res) => {
           load.value = false
-          if (res.data['msg'] === "") {
-            wrong.value = true
-            description.value = "Code does not Produced Any Moves"
-            return;
-          } else if (!validMessageReg.test(res.data['msg'])) {
-            wrong.value = true
-            description.value = "Wrong Animation Format, Do not print to stdout."
-            return;
-          }
           const ret = [sample.value.split(','), res.data['msg'].split(':'), mode.value, codes.value, lang.value, sample.value, tag.value]
           this.$emit('submitted', ret)
         }).catch((err) => {
@@ -159,7 +149,7 @@ export default {
             description.value = err.response.data['msg']
           } else {
             wrong.value = true
-            description.value = "Unknown Error"
+            description.value = "未知错误，可能是服务器出现故障"
           }
         })
       })
@@ -167,11 +157,11 @@ export default {
     const checkSample = (rule, value, callback) => {
       let samplePattern = config[mode.value].reg;
       if (value === "") {
-        return callback(new Error('请输入测试样例'))
+        return callback(new Error('[注意]请输入测试样例'))
       }
       setTimeout(() => {
         if (!samplePattern.test(value)) {
-          callback(new Error('测试样例格式： \"' + config[mode.value].sample + '\"'))
+          callback(new Error('[注意]测试样例格式： \"' + config[mode.value].sample + '\"'))
         } else {
           callback()
         }
@@ -180,7 +170,7 @@ export default {
     const checkTag = (rule, value, callback) => {
       setTimeout(() => {
         if (value.length === 0 || value.length > 200) {
-          callback(new Error('标签长度为1-200个字符'))
+          callback(new Error('[注意]标签长度为1-200个字符'))
         } else {
           callback()
         }
