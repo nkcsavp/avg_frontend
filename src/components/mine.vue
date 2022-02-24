@@ -2,10 +2,40 @@
   <div>
     <transition mode="out-in" name="slide-fade">
       <div v-if="show">
+        <el-card class="box-card">
+          <el-row :align="'middle'" :gutter="15">
+            <el-col :lg="5" :md="5" :sm="8" :xl="5" :xs="8">
+              <el-select v-model="status" clearable placeholder="Status" style="width:100%">
+                <el-option v-for="i in [0,1,2,3,4,5]" :label="nameMap[i][0]" :value="i">
+                  <el-tag :type="nameMap[i][1]" size="large">{{ nameMap[i][0] }}</el-tag>
+                </el-option>
+              </el-select>
+            </el-col>
+            <el-col :lg="5" :md="5" :sm="8" :xl="5" :xs="8">
+              <el-select v-model="lang" clearable placeholder="Lang" style="width:100%">
+                <el-option v-for="i in ['java','python','cpp']" :label="nameMap[i][0]" :value="i">
+                  <el-tag :type="nameMap[i][1]" size="large">{{ nameMap[i][0] }}</el-tag>
+                </el-option>
+              </el-select>
+            </el-col>
+            <el-col :lg="5" :md="5" :sm="8" :xl="5" :xs="8">
+              <el-select v-model="mode" clearable placeholder="Mode" style="width:100%">
+                <el-option v-for="i in ['array','tree','graph']" :label="nameMap[i][0]" :value="i">
+                  <el-tag :type="nameMap[i][1]" size="large">{{ nameMap[i][0] }}</el-tag>
+                </el-option>
+              </el-select>
+            </el-col>
+            <el-col :lg="5" :md="5" :sm="8" :xl="5" :xs="8">
+              <el-input v-model="tag" clearable placeholder="Tag" style="width:100%"/>
+            </el-col>
+            <el-col :lg="4" :md="4" :sm="8" :xl="4" :xs="8">
+              <el-button style="width:100%" type="primary" @click="getData(1)">Search</el-button>
+            </el-col>
+          </el-row>
+        </el-card>
         <el-card v-for="(i,idx) in data" class="box-card">
           <el-descriptions
               :column="3"
-              :size="'48'"
               border
               class="margin-top"
           >
@@ -41,7 +71,20 @@
                   Status
                 </div>
               </template>
-              <el-tag :type="nameMap[i['status']][1]" size="large">{{ nameMap[i['status']][0] }}</el-tag>
+              <el-tag :type="nameMap[Number(i['status'])][1]" size="large">{{
+                  nameMap[Number(i['status'])][0]
+                }}
+              </el-tag>
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>
+                <div class="cell-item">
+                  Tag
+                </div>
+              </template>
+              <div style="width: 200px;">
+                {{ i['tag'] }}
+              </div>
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>
@@ -50,11 +93,29 @@
                 </div>
               </template>
               <el-button type="primary" @click="copyCode(i['code'])">Copy Code</el-button>
-              <el-button type="success" @click="showAnimation(i['sample'],i['animation'],i['mode'])">Show Animation
+              <el-button v-show="i['status'] === 1" type="success"
+                         @click="showAnimation(i['sample'],i['animation'],i['mode'])">Active Animation
               </el-button>
+              <el-button v-show="i['status'] !== 1" disabled type="danger">Empty Animation</el-button>
             </el-descriptions-item>
           </el-descriptions>
         </el-card>
+        <el-empty v-show="data.length === 0" description="No Task"></el-empty>
+        <el-row :align="'middle'" :gutter="15" justify="space-around">
+          <el-col :lg="4" :md="4" :sm="8" :xl="4" :xs="8">
+            <el-button :disabled="page === 1" style="width:200px" type="primary" @click="getData(page - 1)">Prev
+            </el-button>
+          </el-col>
+          <el-col :lg="4" :md="4" :sm="8" :xl="4" :xs="8">
+            <div style="text-align: center">
+              <el-tag size="large" type="success">{{ page }}</el-tag>
+            </div>
+          </el-col>
+          <el-col :lg="4" :md="4" :sm="8" :xl="4" :xs="8">
+            <el-button :disabled="data.length === 0" style="width:200px" type="primary" @click="getData(page + 1)">Next
+            </el-button>
+          </el-col>
+        </el-row>
       </div>
       <div v-else>
         <el-button type="success" @click="toggle">
@@ -89,7 +150,15 @@ export default {
     let type = ref(null)
     let mvs = ref(null)
     let dta = ref(null)
+    let pageSize = 5
+    let page = ref(1)
     let validMessageReg = /^(([\w]+\((([\d]+,)*[\d]+)*\)):)*[\w]+\((([\d]+,)*[\d]+)*\)$/
+
+    let status = ref("")
+    let tag = ref("")
+    let mode = ref("")
+    let lang = ref("")
+
     const nameMap = {
       'java': ["Java", undefined],
       'cpp': ["C++", "info"],
@@ -99,7 +168,11 @@ export default {
       'graph': ["图(Graph)", undefined],
       0: ["Pending", "info"],
       1: ["Success", "success"],
-      2: ["Failure", "error"]
+      2: ["TimeOut", "danger"],
+      3: ["Error", "danger"],
+      4: ["Empty", "warning"],
+      5: ["Invalid Format", "warning"]
+
     }
     Date.prototype.format = function (fmt) {
       let o = {
@@ -121,19 +194,32 @@ export default {
       }
       return fmt;
     }
-    axios({
-      url: "/info/tasks",
-    }).then((res) => {
-      store.dispatch("Finished")
-      data.value = res.data
-    }).catch((err) => {
-      ElNotification({
-        title: 'Error',
-        message: err.response.data['msg'],
-        type: 'error',
+
+    const getData = (newPage) => {
+      store.dispatch("Load")
+      page.value = newPage;
+      axios({
+        url: "/info/tasks",
+        params: {
+          start: (page.value - 1) * pageSize,
+          length: pageSize,
+          tag: tag.value.length === 0 ? null : tag.value,
+          status: status.value.length === 0 ? null : status.value,
+          mode: mode.value.length === 0 ? null : mode.value,
+          lang: lang.value.length === 0 ? null : lang.value
+        }
+      }).then((res) => {
+        store.dispatch("Finished")
+        data.value = res.data
+      }).catch((err) => {
+        ElNotification({
+          title: 'Error',
+          message: err.response.data['msg'],
+          type: 'error',
+        })
+        router.push("/")
       })
-      router.push("/")
-    })
+    }
     const copyCode = (content) => {
       let txa = document.createElement('textarea')
       txa.value = content
@@ -151,19 +237,12 @@ export default {
       show.value = !show.value
     }
     const showAnimation = function (sample, animation, mode) {
-      if (!validMessageReg.test(animation)) {
-        ElNotification({
-          title: 'Error',
-          message: "Wrong Animation or No Output",
-          type: 'error',
-        })
-        return
-      }
       mvs.value = animation.split(':')
       dta.value = sample.split(',')
       type.value = mode
       toggle()
     }
+    getData(1);
     return {
       type,
       mvs,
@@ -171,9 +250,15 @@ export default {
       show,
       data,
       nameMap,
+      page,
+      status,
+      mode,
+      lang,
+      tag,
       copyCode,
       toggle,
-      showAnimation
+      showAnimation,
+      getData
     }
   },
   components: {
@@ -188,6 +273,10 @@ export default {
   margin-bottom: 20px;
 }
 
+.el-select-dropdown__item {
+  padding-left: 10px;
+}
+
 .slide-fade-enter-active {
   transition: all 0.5s cubic-bezier(0, .50, .50, 1);
 }
@@ -196,9 +285,14 @@ export default {
   transition: all 0.5s cubic-bezier(0, .50, .50, 1);
 }
 
-.slide-fade-enter-from,
+
 .slide-fade-leave-to {
-  transform: translateY(200px);
+  transform: translateX(-200px);
+  opacity: 0;
+}
+
+.slide-fade-enter-from {
+  transform: translateX(-200px);
   opacity: 0;
 }
 

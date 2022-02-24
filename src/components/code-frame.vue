@@ -19,12 +19,17 @@
         </el-form-item>
       </el-tooltip>
       <el-tooltip content="选择语言" placement="left" trigger="hover">
-        <el-form-item label="Language" prop="lang">
+      <el-form-item label="Language" prop="lang">
           <el-select v-model="codeForm.lang" placeholder="Language:">
             <el-option label="Java" value="java"></el-option>
             <el-option label="Python" value="python"></el-option>
             <el-option label="C++" value="cpp"></el-option>
           </el-select>
+        </el-form-item>
+      </el-tooltip>
+      <el-tooltip content="设置本次执行的标签信息" placement="left" trigger="hover">
+        <el-form-item label="Tag" prop="tag">
+          <el-input v-model="codeForm.tag"></el-input>
         </el-form-item>
       </el-tooltip>
       <el-tooltip content="输入测试样例(改变Mode会清空)" placement="left" trigger="click">
@@ -102,9 +107,10 @@ export default {
 
     const store = useStore()
     let mode = ref('array')
-    let lang = ref("java")
+    let lang = ref('java')
     let load = ref(false)
     let sample = ref(config[mode.value].sample)
+    let tag = ref(lang.value + '_' + mode.value)
     let codes = ref(config[lang.value][mode.value])
     if (this.initCode !== null) {
       codes.value = this.initCode
@@ -120,7 +126,7 @@ export default {
         }
         load.value = true
         axios({
-          url: "submit?lang=" + this.codeForm.lang + "&mode=" + this.codeForm.mode + "&sample=" + this.codeForm.sample.replaceAll('x', '-1'),
+          url: "submit?lang=" + this.codeForm.lang + "&mode=" + this.codeForm.mode + "&sample=" + this.codeForm.sample.replaceAll('x', '-1') + "&tag=" + this.codeForm.tag,
           method: 'POST',
           headers: {'content-type': 'text/plain'},
           data: this.codeForm.codes
@@ -170,6 +176,16 @@ export default {
         }
       }, 100)
     }
+    const checkTag = (rule, value, callback) => {
+      console.log("checkTag")
+      setTimeout(() => {
+        if (value.length === 0 || value.length > 200) {
+          callback(new Error('标签长度为1-200个字符'))
+        } else {
+          callback()
+        }
+      }, 100)
+    }
 
     watch(mode, (newMode, old) => {
       sample.value = config[mode.value].sample
@@ -187,13 +203,15 @@ export default {
         mode,
         lang,
         codes,
-        sample
+        sample,
+        tag
       },
       rules: {
         sample: [{required: true, validator: checkSample, trigger: 'blur'}],
         lang: [{required: true, trigger: 'blur'}],
         codes: [{required: true, trigger: 'blur'}],
         mode: [{required: true, trigger: 'blur'}],
+        tag: [{required: true, validator: checkTag, trigger: 'blur'}]
       }
     }
   },
