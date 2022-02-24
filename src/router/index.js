@@ -5,6 +5,7 @@ const Index = () => import("../components/index.vue")
 const Mine = () => import("../components/mine.vue")
 const Login = () => import("../components/login.vue")
 const Register = () => import("../components/register.vue")
+const Forget = () => import("../components/forget.vue")
 const Sort = () => import("../components/algos/sort.vue")
 const Tree = () => import("../components/algos/tree.vue")
 const Interactive = () => import("../components/interactive.vue")
@@ -49,6 +50,10 @@ const routes = [
     {
         path: '/register',
         component: Register,
+    },
+    {
+        path: '/forget',
+        component: Forget,
     }
 ]
 
@@ -64,7 +69,7 @@ router.beforeEach((to, from, next) => {
     } else {
         store.dispatch("Load")
     }
-    if (to.fullPath.search("register|login") !== -1) {
+    if (to.fullPath.search("register|login|forget") !== -1) {
         if (!store.state.isSignedIn) {
             next();
         } else {

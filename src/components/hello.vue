@@ -59,6 +59,7 @@ export default {
   setup() {
     const store = useStore()
     store.dispatch("Finished_frame")
+    store.dispatch("Finished")
   },
 }
 </script>

@@ -25,9 +25,11 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="login">Submit</el-button>
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <el-link :underline="false" type="primary" @click="$router.push('/register')">Didn't have an account?
-          </el-link>
+          &nbsp;&nbsp;
+          <el-link :underline="false" type="primary" @click="$router.push('/register')">Need Register?</el-link>
+          &nbsp; or &nbsp;
+          <el-link :underline="false" type="primary" @click="$router.push('/forget')">Forget Password?</el-link>
+
         </el-form-item>
       </el-form>
     </div>

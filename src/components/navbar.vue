@@ -11,7 +11,7 @@ import {useStore} from "vuex";
 import {useRouter} from "vue-router";
 import {computed} from "vue";
 import axios from "axios";
-import {ElNotification} from "_element-plus@2.0.2@element-plus";
+import {ElNotification} from "element-plus";
 
 export default {
   name: "navbar",
@@ -19,10 +19,7 @@ export default {
     const store = useStore();
     const router = useRouter();
     let signedIn = computed(() => store.state.isSignedIn)
-    const navbarItems = computed(() => !store.state.isSignedIn ? [{name: "Log In", idx: "/login"}, {
-      name: "Register",
-      idx: "/register"
-    }] : [{name: "Mine", idx: "/mine"}]);
+    const navbarItems = computed(() => !store.state.isSignedIn ? [{name: "Log In", idx: "/login"}, {name: "Register", idx: "/register"}, {name: "Forget", idx: "/forget"}] : [{name: "Mine", idx: "/mine"}]);
     const signOut = () => {
       store.dispatch("Load")
       axios({
