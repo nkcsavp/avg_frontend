@@ -43,7 +43,7 @@ import router from "../router";
 import {useRoute} from "vue-router";
 import {ref} from "vue";
 import sha1 from "sha1";
-import {ElNotification} from "_element-plus@2.0.2@element-plus";
+import {ElNotification} from "element-plus";
 import {useStore} from "vuex";
 
 
@@ -101,7 +101,6 @@ export default {
           }).catch((err) => {
             wrong.value = true
             description.value = err.response.data['msg']
-            console.log(err.response.data)
             store.dispatch("Finished");
           })
         } else {

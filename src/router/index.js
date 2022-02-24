@@ -3,6 +3,7 @@ import store from "../store";
 
 const Index = () => import("../components/index.vue")
 const Mine = () => import("../components/mine.vue")
+const Update = () => import("../components/update.vue")
 const Login = () => import("../components/login.vue")
 const Register = () => import("../components/register.vue")
 const Forget = () => import("../components/forget.vue")
@@ -38,6 +39,10 @@ const routes = [
     {
         path: '/mine',
         component: Mine
+    },
+    {
+        path: '/update',
+        component: Update
     },
     {
         path: '/login',
@@ -76,7 +81,7 @@ router.beforeEach((to, from, next) => {
             router.push("/");
             next();
         }
-    } else if (to.fullPath.search("mine|interactive") !== -1) {
+    } else if (to.fullPath.search("mine|interactive|update") !== -1) {
         if (store.state.isSignedIn) {
             next();
         } else {

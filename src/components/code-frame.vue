@@ -126,7 +126,7 @@ export default {
         }
         load.value = true
         axios({
-          url: "submit?lang=" + this.codeForm.lang + "&mode=" + this.codeForm.mode + "&sample=" + this.codeForm.sample.replaceAll('x', '-1') + "&tag=" + this.codeForm.tag,
+          url: "submit?lang=" + this.codeForm.lang + "&mode=" + this.codeForm.mode + "&sample=" + this.codeForm.sample.replaceAll('x', '0') + "&tag=" + this.codeForm.tag,
           method: 'POST',
           headers: {'content-type': 'text/plain'},
           data: this.codeForm.codes
@@ -177,7 +177,6 @@ export default {
       }, 100)
     }
     const checkTag = (rule, value, callback) => {
-      console.log("checkTag")
       setTimeout(() => {
         if (value.length === 0 || value.length > 200) {
           callback(new Error('标签长度为1-200个字符'))

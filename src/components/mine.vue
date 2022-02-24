@@ -96,7 +96,8 @@
               <el-button v-show="i['status'] === 1" type="success"
                          @click="showAnimation(i['sample'],i['animation'],i['mode'])">Active Animation
               </el-button>
-              <el-button v-show="i['status'] !== 1" disabled type="danger">Empty Animation</el-button>
+              <el-button v-show="i['status'] !== 1" disabled type="warning">Empty Animation</el-button>
+              <el-button type="danger" @click="removeTask(i['identifier'])">Remove</el-button>
             </el-descriptions-item>
           </el-descriptions>
         </el-card>
@@ -194,7 +195,31 @@ export default {
       }
       return fmt;
     }
-
+    const removeTask = (id) => {
+      store.dispatch("Load")
+      console.log(id)
+      axios({
+        url: "/info/tasks/remove",
+        params: {
+          identifier: id
+        }
+      }).then((res) => {
+        getData(page.value)
+        store.dispatch("Finished")
+        ElNotification({
+          title: 'Success',
+          message: res.data['msg'],
+          type: 'success',
+        })
+      }).catch((err) => {
+        store.dispatch("Finished")
+        ElNotification({
+          title: 'Error',
+          message: err.response.data['msg'],
+          type: 'error',
+        })
+      })
+    }
     const getData = (newPage) => {
       store.dispatch("Load")
       page.value = newPage;
@@ -258,7 +283,8 @@ export default {
       copyCode,
       toggle,
       showAnimation,
-      getData
+      getData,
+      removeTask
     }
   },
   components: {

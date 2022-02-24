@@ -80,7 +80,6 @@ export default {
       }
       setTimeout(() => {
         if (!samplePattern.test(value + ",")) {
-          console.log(value)
           callback(new Error('Test case need to be like this: \"1,2,3,4,5\"'))
         } else {
           callback()

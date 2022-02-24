@@ -19,7 +19,7 @@ export default {
     const store = useStore();
     const router = useRouter();
     let signedIn = computed(() => store.state.isSignedIn)
-    const navbarItems = computed(() => !store.state.isSignedIn ? [{name: "Log In", idx: "/login"}, {name: "Register", idx: "/register"}, {name: "Forget", idx: "/forget"}] : [{name: "Mine", idx: "/mine"}]);
+    const navbarItems = computed(() => !store.state.isSignedIn ? [{name: "Log In", idx: "/login"}, {name: "Register", idx: "/register"}, {name: "Forget", idx: "/forget"}] : [{name: "Mine", idx: "/mine"},{name: "Update", idx: "/update"}]);
     const signOut = () => {
       store.dispatch("Load")
       axios({
