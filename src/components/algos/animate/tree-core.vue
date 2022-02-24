@@ -61,6 +61,7 @@
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import {destroy, init, pause, setPosition} from 'algomotion/type/tree'
 import {Help, Pause, Right} from "@icon-park/vue-next";
+import {ElNotification} from "element-plus";
 
 export default {
   name: 'tree-core',
@@ -93,10 +94,11 @@ export default {
         emphasisTextColor: "#c6e2ff",
         textColor: '#409eff',
         fillColor: '#b3d8ff',
-        position: [nowPosition]
+        position: [nowPosition],
+        speed: 0.5
       }
       let info = {
-        'dta': props.dta,
+        'dta': props.dta.concat(),
         'mvs': props.mvs
       }
       init(set, info, canvas.value)
@@ -112,6 +114,13 @@ export default {
     })
 
     const changePosition = () => {
+      if(isNaN(nowPosition.value)) {
+        ElNotification({
+          title: 'Error',
+          message: "该动画仅有一个动作",
+          type: 'error',
+        })
+      }
       setPosition(nowPosition.value)
     }
     const pauseWrapper = () => {

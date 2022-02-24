@@ -23,7 +23,7 @@
     </el-row>
     <transition mode="out-in" name="slide-fade">
       <div v-if="confirm">
-        <tree-core :key="type" :dta="dta" :infos="infos" :mvs='mvs'></tree-core>
+        <tree-core :key="type" :dta="dta" :enable-info="true" :infos="infos" :mvs='mvs'></tree-core>
       </div>
       <div v-else class="sample-frame">
         <el-row :align="'middle'" :gutter="15">
@@ -60,6 +60,7 @@ import {useRoute} from "vue-router";
 import {inject, onMounted, ref} from 'vue'
 import {DoubleDown, Help} from "@icon-park/vue-next";
 import {useStore} from "vuex";
+import {getFunctions} from "../generator/tree.js";
 
 export default {
   name: "tree",
@@ -74,20 +75,20 @@ export default {
     let confirm = ref(false);
     let loaded = ref(false)
     const checkSample = (rule, value, callback) => {
-      const samplePattern = /^([0-9],)*$/;
+      const samplePattern = /^([0-9x],)*[0-9x]$/;
       if (value === "") {
-        return callback(new Error('Test case need to be like this: \"1,2,3,4,5\"'))
+        return callback(new Error('Test case need to be like this: \"1,2,3,4,x,6\"'))
       }
       setTimeout(() => {
-        if (!samplePattern.test(value + ",")) {
-          callback(new Error('Test case need to be like this: \"1,2,3,4,5\"'))
+        if (!samplePattern.test(value)) {
+          callback(new Error('Test case need to be like this: \"1,2,3,4,x,6\"'))
         } else {
           callback()
         }
       }, 100)
     }
     const sampleForm = {
-      sample: "1,3,4,5,2"
+      sample: "1,2,3,4,x,6"
     }
     const rules = {
       sample: [{required: true, validator: checkSample, trigger: 'blur'}],
@@ -98,13 +99,16 @@ export default {
       } else {
         this.$refs.sampleFormRef.validate((valid) => {
           if (valid) {
-            // Preprocess Function Here
-            const preprocess = (dta, mvs, infos) => {
-              dta.value = [7, 4, 5, 3, 6, 9, 1, 8, Math.random()];
-              mvs.value = ["get(0)", "get(1)", "swap(0,1)", "get(1)", "get(2)", "swap(1,2)", "get(2)", "get(3)", "swap(2,3)"];
-              infos.value = ['第1行', '第2行', '第3行', '第4行', '第5行', '第6行', '第7行', '第8行', '第9行']
-            }
-            preprocess(dta, mvs, infos)
+            mvs.value = []
+            infos.value = []
+            dta.value = sampleForm.sample.split(",").map((i)=>{
+              if(isNaN(Number(i))){
+                return undefined
+              } else {
+                return Number(i)
+              }
+            })
+            getFunctions()[type.value](dta.value.concat(),mvs,infos);
             confirm.value = !confirm.value;
           }
         })

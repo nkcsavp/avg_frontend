@@ -72,7 +72,11 @@ export default {
     'submitted'
   ],
   props: {
-    'initCode': String
+    'initCode': String,
+    'initMode': String,
+    'initLang': String,
+    'initSample': String,
+    'initTag': String
   },
   data() {
     const config = {
@@ -106,15 +110,12 @@ export default {
     }
 
     const store = useStore()
-    let mode = ref('array')
-    let lang = ref('java')
+    let mode = ref(this.initMode?this.initMode:'array')
+    let lang = ref(this.initLang?this.initLang:'java')
     let load = ref(false)
-    let sample = ref(config[mode.value].sample)
-    let tag = ref(lang.value + '_' + mode.value)
-    let codes = ref(config[lang.value][mode.value])
-    if (this.initCode !== null) {
-      codes.value = this.initCode
-    }
+    let sample = ref(this.initSample?this.initSample:config[mode.value].sample)
+    let tag = ref(this.initTag?this.initTag:(lang.value + '_' + mode.value))
+    let codes = ref(this.initCode?this.initCode:config[lang.value][mode.value])
     let wrong = ref(false);
     let description = ref(null);
     let validMessageReg = /^(([\w]+\((([\d]+,)*[\d]+)*\)):)*[\w]+\((([\d]+,)*[\d]+)*\)$/
@@ -141,7 +142,7 @@ export default {
             description.value = "Wrong Animation Format, Do not print to stdout."
             return;
           }
-          const ret = [sample.value.split(','), res.data['msg'].split(':'), mode.value, codes.value]
+          const ret = [sample.value.split(','), res.data['msg'].split(':'), mode.value, codes.value, lang.value, sample.value, tag.value]
           this.$emit('submitted', ret)
         }).catch((err) => {
           load.value = false

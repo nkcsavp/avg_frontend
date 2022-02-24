@@ -16,12 +16,10 @@
                           theme="outline"/></span>
         </el-tooltip>
         <div style="height: 255px">
-          <el-scrollbar ref="scrollbar" native style="padding-top: 10px" @scroll="scroll">
-            <div>
-              <p v-for="(item,idx) in infos" :key="item"
-                 :class="{'list-item':true,'list-item-emphasized':nowPosition === idx}">
-                {{ item }}
-              </p>
+          <el-scrollbar ref="scrollbar" native style="padding-top: 10px">
+            <div class="info-block" v-for="(item,idx) in infos" :key="item"
+               :class="{'list-item':true,'list-item-emphasized':nowPosition === idx}">
+              {{ item }}
             </div>
           </el-scrollbar>
         </div>
@@ -92,10 +90,12 @@ export default {
         emphasisTextColor: "#fff",
         textColor: '#409eff',
         fillColor: '#b3d8ff',
-        position: [nowPosition]
+        barrierColor: '#409eff',
+        position: [nowPosition],
+        speed: 0.5
       }
       let info = {
-        'dta': props.dta,
+        'dta': props.dta.concat(),
         'mvs': props.mvs
       }
       init(set, info, canvas.value)
@@ -190,5 +190,12 @@ export default {
 canvas {
   display: block;
   width: 100% !important;
+}
+
+.info-block{
+  font-family: 'Microsoft Yahei', 'Hiragino Sans GB', 'Microsoft Sans Serif', 'WenQuanYi Micro Hei', sans-serif!important;
+  text-align: center;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 </style>

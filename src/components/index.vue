@@ -36,31 +36,18 @@
 import {useStore} from "vuex";
 import {provide} from "vue";
 import {Api, ChristmasTree, SortTwo} from "@icon-park/vue-next";
+import {getSortTypes} from "./generator/sort.js";
+import {getTreeTypes} from "./generator/tree.js";
 
 export default {
   name: "Index",
   setup() {
     const store = useStore()
     store.dispatch("Finished")
+    let allSortTypes = getSortTypes()
+    let allTreeTypes = getTreeTypes()
 
-    const allSortTypes = {
-      // "quick":"快速排序",
-      "bubble": "冒泡排序",
-      // "radix":"基数排序",
-      // "selection":"选择排序",
-      // "insertion":"插入排序",
-      // "shell":"希尔排序",
-      // "merge":"归并排序",
-      // "heap":"堆排序",
-      // "counting":"计数排序",
-      // "bucket":"桶排序",
-    }
-    const allTreeTypes = {
-      "preorder": "前序遍历",
-      // "inorder":"中序遍历",
-      // "postorder":"后序遍历"
-    }
-    provide("dict", allSortTypes)
+    provide("dict_sort", allSortTypes)
     provide("dict_tree", allTreeTypes)
     return {
       store,
@@ -76,14 +63,13 @@ export default {
 }
 </script>
 
-<style>
-.vertical-menu:not(.el-menu--collapse) {
+<style scoped>
+.vertical-menu{
   width: 200px;
   min-height: 600px;
 }
 
-.i-icon,.el-menu-item .i-icon svg,.el-sub-menu__title .i-icon svg{
-  vertical-align: middle !important;
+.el-menu-item{
+  width: 200px;
 }
-
 </style>

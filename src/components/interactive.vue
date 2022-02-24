@@ -32,7 +32,8 @@
         <tree-core v-if="confirm && type === 'tree'" :key="type" :dta="dta" :enable-info="false" :infos="infos"
                    :mvs='mvs'></tree-core>
       </div>
-      <code-frame v-else :init-code="codeSave" @submitted="submitted($event,data)"></code-frame>
+      <code-frame v-else :init-code="codeSave" :init-lang="langSave" :init-mode="type" :init-sample="sampleSave"
+                  :init-tag="tagSave" @submitted="submitted($event,data)"></code-frame>
     </transition>
   </div>
 </template>
@@ -44,6 +45,7 @@ import CodeFrame from './code-frame.vue'
 import {onMounted, ref} from 'vue'
 import {Api, DoubleDown, Help} from "@icon-park/vue-next";
 import {useStore} from "vuex";
+import {ElNotification} from "element-plus";
 
 export default {
   name: "interactive",
@@ -54,6 +56,9 @@ export default {
     let infos = ref([])
     let type = ref('')
     let codeSave = ref(null)
+    let langSave = ref(null)
+    let sampleSave = ref(null)
+    let tagSave = ref(null)
     let confirm = ref(false)
     let loaded = ref(false)
     const toggle = () => {
@@ -64,18 +69,31 @@ export default {
       mvs.value = data[1]
       type.value = data[2]
       codeSave.value = data[3]
+      langSave.value = data[4]
+      sampleSave.value = data[5]
+      tagSave.value = data[6]
       toggle()
     }
     onMounted(() => {
       setTimeout(() => {
         loaded.value = true
         store.dispatch("Finished_frame")
+        ElNotification({
+          title: 'Info',
+          dangerouslyUseHTMLString: true,
+          message: "使用自定义功能前，建议<a class='.el-link' target='_blank' href=\"https://nkcsavp.github.io/User/\">阅读文档</a>",
+          type: 'info',
+          duration: 20*1000
+        })
       }, 500)
     })
     return {
       confirm,
       loaded,
       codeSave,
+      langSave,
+      sampleSave,
+      tagSave,
       type,
       toggle,
       submitted,

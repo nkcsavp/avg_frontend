@@ -197,7 +197,6 @@ export default {
     }
     const removeTask = (id) => {
       store.dispatch("Load")
-      console.log(id)
       axios({
         url: "/info/tasks/remove",
         params: {
