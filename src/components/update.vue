@@ -75,9 +75,19 @@ export default {
             })
             router.push("/")
           }).catch((err) => {
-            wrong.value = true
-            description.value = err.response.data['msg']
-            store.dispatch("Finished");
+            store.dispatch("Finished")
+            if (err.response.status === 403) {
+              ElNotification({
+                title: 'Error',
+                message: err.response.data['msg'],
+                type: 'error',
+              })
+              store.dispatch("LogOut")
+              router.push("/login")
+            } else {
+              wrong.value = true
+              description.value = err.response.data['msg']
+            }
           })
         } else {
           return false;
