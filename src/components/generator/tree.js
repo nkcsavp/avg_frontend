@@ -38,7 +38,7 @@ export function getFunctions() {
                 preOrder( 2 * pos + 2);
             }
             preOrder(0)
-        }
+        },
         /*
             在下方添加新增的算法
             Add new algorithms functions below

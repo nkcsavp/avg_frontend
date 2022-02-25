@@ -44,7 +44,7 @@ export function getFunctions() {
                 mvs.value.push("barrier(" + (len - i - 1) + ")")
                 infos.value.push("仅处理前" + ( len - i - 1 ) + "个数字")
             }
-        }
+        },
         /*
             在下方添加新增的算法
             Add new algorithms functions below
