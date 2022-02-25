@@ -141,6 +141,7 @@ import {useRouter} from "vue-router";
 import {Left} from "@icon-park/vue-next";
 import ArrayCore from './algos/animate/array-core.vue'
 import TreeCore from './algos/animate/tree-core.vue'
+import router from "../router";
 
 export default {
   setup() {
@@ -212,11 +213,21 @@ export default {
         })
       }).catch((err) => {
         store.dispatch("Finished")
-        ElNotification({
-          title: 'Error',
-          message: err.response.data['msg'],
-          type: 'error',
-        })
+        if (err.response.status === 403) {
+          ElNotification({
+            title: 'Error',
+            message: err.response.data['msg'],
+            type: 'error',
+          })
+          store.dispatch("LogOut")
+          router.push("/login")
+        } else {
+          ElNotification({
+            title: 'Error',
+            message: err.response.data['msg'],
+            type: 'error',
+          })
+        }
       })
     }
     const getData = (newPage) => {
@@ -236,12 +247,23 @@ export default {
         store.dispatch("Finished")
         data.value = res.data
       }).catch((err) => {
-        ElNotification({
-          title: 'Error',
-          message: err.response.data['msg'],
-          type: 'error',
-        })
-        router.push("/")
+        store.dispatch("Finished")
+        if (err.response.status === 403) {
+          ElNotification({
+            title: 'Error',
+            message: err.response.data['msg'],
+            type: 'error',
+          })
+          store.dispatch("LogOut")
+          router.push("/login")
+        } else {
+          ElNotification({
+            title: 'Error',
+            message: err.response.data['msg'],
+            type: 'error',
+          })
+          router.push("/")
+        }
       })
     }
     const copyCode = (content) => {
