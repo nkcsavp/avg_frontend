@@ -11,6 +11,8 @@ export function getTreeTypes() {
             function name: algorithm name
          */
         "preorder": "前序遍历",
+        "inorder": "中序遍历",
+        "postorder": "后序遍历",
     }
 }
 
@@ -43,5 +45,37 @@ export function getFunctions() {
             在下方添加新增的算法
             Add new algorithms functions below
         */
+        /*
+            中序遍历
+        */
+        "inorder": (data,mvs,infos) => {
+            const inOrder = (pos) => {
+                if(pos >= data.length || !data[pos]) return;
+
+                inOrder(2 * pos + 1);
+
+                mvs.value.push("get(" + pos + ")");
+                infos.value.push("处理结点 " + data[pos]);
+
+                inOrder(2 * pos + 2);
+            }
+            inOrder(0);
+        },
+        /*
+            后序遍历
+        */
+        "postorder": (data,mvs,infos) => {
+            const postorder = (pos) => {
+                if(pos >= data.length || !data[pos]) return;
+
+                postorder(2 * pos + 1);
+
+                postorder(2 * pos + 2);
+
+                mvs.value.push("get(" + pos + ")");
+                infos.value.push("处理结点 " + data[pos]);
+            }
+            postorder(0);
+        },
     }
 }
