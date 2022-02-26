@@ -13,6 +13,7 @@ export function getTreeTypes() {
         "preorder": "前序遍历",
         "inorder": "中序遍历",
         "postorder": "后序遍历",
+        "levelorder": "层序遍历",
     }
 }
 
@@ -54,6 +55,15 @@ export function getFunctions() {
 
                 inOrder(2 * pos + 1);
 
+                if(pos !== 0 && pos % 2 === 1){
+                    mvs.value.push("blank()");
+                    infos.value.push("将要处理 " + data[(pos - 1)/2] + " 的左结点");
+                }
+                else if(pos !== 0 && pos % 2 === 0){
+                    mvs.value.push("blank()");
+                    infos.value.push("将要处理 " + data[pos/2] + " 的右结点");
+                }
+
                 mvs.value.push("get(" + pos + ")");
                 infos.value.push("处理结点 " + data[pos]);
 
@@ -65,17 +75,57 @@ export function getFunctions() {
             后序遍历
         */
         "postorder": (data,mvs,infos) => {
-            const postorder = (pos) => {
+            const postOrder = (pos) => {
                 if(pos >= data.length || !data[pos]) return;
 
-                postorder(2 * pos + 1);
+                postOrder(2 * pos + 1);
 
-                postorder(2 * pos + 2);
+                postOrder(2 * pos + 2);
+
+                if(pos !== 0 && pos % 2 === 0){
+                    mvs.value.push("blank()");
+                    infos.value.push("将要处理 " + data[pos/2] + " 的右结点");
+                }
+                else if(pos !== 0 && pos % 2 === 1){
+                    mvs.value.push("blank()");
+                    infos.value.push("将要处理 " + data[(pos - 1)/2] + " 的左结点");
+                }
 
                 mvs.value.push("get(" + pos + ")");
                 infos.value.push("处理结点 " + data[pos]);
             }
-            postorder(0);
+            postOrder(0);
         },
+        /*
+            二叉树的层序遍历
+        */
+        "levelorder": (data,mvs,infos) =>{
+            const res = []
+            const levelOrder = (pos,level) =>{
+                if(pos >= data.length || !data[pos]) return;
+                if(res.length === level){
+                    res.push([]);
+                }
+                res[level].push(pos);
+                levelOrder(2 * pos + 1,level + 1);
+                levelOrder(2 * pos + 2,level + 1);
+            }
+            levelOrder(0,0);
+            for (let i = 0; i < res.length; i++) {
+                for (let j = 0; j < res[i].length; j++) {
+                    if(res[i][j] !== 0 && res[i][j] % 2 === 0){
+                        mvs.value.push("blank()");
+                        infos.value.push("将要处理 " + data[res[i][j]/2] + " 的右结点");
+                    }else if(res[i][j] !== 0 && res[i][j] % 2 !== 0){
+                        mvs.value.push("blank()");
+                        infos.value.push("将要处理 " + data[(res[i][j] - 1)/2] + " 的左结点");
+                    }
+                    mvs.value.push("get(" + res[i][j] + ")");
+                    infos.value.push("处理结点 " + data[res[i][j]]);
+                }
+            }
+        },
+
+
     }
 }
