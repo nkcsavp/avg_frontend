@@ -9,6 +9,7 @@ const Register = () => import("../components/register.vue")
 const Forget = () => import("../components/forget.vue")
 const Sort = () => import("../components/algos/sort.vue")
 const Tree = () => import("../components/algos/tree.vue")
+const Graph = () => import("../components/algos/graph.vue")
 const Interactive = () => import("../components/interactive.vue")
 const Hello = () => import("../components/hello.vue")
 
@@ -29,6 +30,10 @@ const routes = [
             {
                 path: '/sort/:type',
                 component: Sort,
+            },
+            {
+                path: '/graph/:type',
+                component: Graph,
             },
             {
                 path: '/tree/:type',
@@ -69,7 +74,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
 
-    if (to.fullPath.search("sort|tree|interactive") !== -1) {
+    if (to.fullPath.search("sort|tree|graph|interactive") !== -1) {
         store.dispatch("Load_frame")
     } else {
         store.dispatch("Load")

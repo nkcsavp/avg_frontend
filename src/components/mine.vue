@@ -127,6 +127,8 @@
                     :mvs='mvs'></array-core>
         <tree-core v-if="!show && type === 'tree'" :key="type" :dta="dta" :enable-info="false" :infos="[]"
                    :mvs='mvs'></tree-core>
+        <graph-core v-if="!show && type === 'graph'" :key="type" :dta="dta" :enable-info="false" :infos="[]"
+                   :mvs='mvs'></graph-core>
       </div>
     </transition>
   </div>
@@ -141,7 +143,8 @@ import {useRouter} from "vue-router";
 import {Left} from "@icon-park/vue-next";
 import ArrayCore from './algos/animate/array-core.vue'
 import TreeCore from './algos/animate/tree-core.vue'
-import router from "../router";
+import GraphCore from './algos/animate/graph-core.vue'
+
 
 export default {
   setup() {

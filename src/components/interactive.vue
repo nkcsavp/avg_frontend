@@ -31,6 +31,8 @@
                     :mvs='mvs'></array-core>
         <tree-core v-if="confirm && type === 'tree'" :key="type" :dta="dta" :enable-info="false" :infos="infos"
                    :mvs='mvs'></tree-core>
+        <graph-core v-if="confirm && type === 'graph'" :key="type" :dta="dta" :enable-info="false" :infos="infos"
+                   :mvs='mvs'></graph-core>
       </div>
       <code-frame v-else :init-code="codeSave" :init-lang="langSave" :init-mode="type" :init-sample="sampleSave"
                   :init-tag="tagSave" @submitted="submitted($event,data)"></code-frame>
@@ -41,6 +43,7 @@
 <script>
 import ArrayCore from './algos/animate/array-core.vue'
 import TreeCore from './algos/animate/tree-core.vue'
+import GraphCore from './algos/animate/graph-core.vue'
 import CodeFrame from './code-frame.vue'
 import {onMounted, ref} from 'vue'
 import {Api, DoubleDown, Help} from "@icon-park/vue-next";
@@ -55,6 +58,7 @@ export default {
     let mvs = ref([])
     let infos = ref([])
     let type = ref('')
+    let relationSave = ref('')
     let codeSave = ref(null)
     let langSave = ref(null)
     let sampleSave = ref(null)
@@ -72,6 +76,7 @@ export default {
       langSave.value = data[4]
       sampleSave.value = data[5]
       tagSave.value = data[6]
+      relationSave.value = data[7]
       toggle()
     }
     onMounted(() => {
@@ -105,6 +110,7 @@ export default {
   components: {
     TreeCore,
     ArrayCore,
+    GraphCore,
     CodeFrame,
     Help,
     DoubleDown,

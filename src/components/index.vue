@@ -20,6 +20,13 @@
             <span> 树算法</span></template>
           <el-menu-item v-for="(value,key) in allTreeTypes" :index="'/tree/' + key">{{ value }}</el-menu-item>
         </el-sub-menu>
+        <el-sub-menu index="3">
+          <template #title>
+            <christmas-tree :strokeWidth="3" fill="#000000" size="24" strokeLinecap="butt" strokeLinejoin="miter"
+                            theme="outline"/>
+            <span> 图算法</span></template>
+          <el-menu-item v-for="(value,key) in allGraphTypes" :index="'/graph/' + key">{{ value }}</el-menu-item>
+        </el-sub-menu>
       </el-menu>
       <el-main v-loading="store.state.isFrameLoading" style="padding-top: 0">
         <router-view v-slot="{ Component }">
@@ -38,6 +45,7 @@ import {provide} from "vue";
 import {Api, ChristmasTree, SortTwo} from "@icon-park/vue-next";
 import {getSortTypes} from "./generator/sort.js";
 import {getTreeTypes} from "./generator/tree.js";
+import {getGraphTypes} from "./generator/graph.js";
 
 export default {
   name: "Index",
@@ -46,13 +54,17 @@ export default {
     store.dispatch("Finished")
     let allSortTypes = getSortTypes()
     let allTreeTypes = getTreeTypes()
+    let allGraphTypes = getGraphTypes()
 
     provide("dict_sort", allSortTypes)
     provide("dict_tree", allTreeTypes)
+    provide("dict_graph", allGraphTypes)
+
     return {
       store,
       allSortTypes,
-      allTreeTypes
+      allTreeTypes,
+      allGraphTypes
     }
   },
   components: {

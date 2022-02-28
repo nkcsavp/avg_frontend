@@ -14,7 +14,7 @@
           <el-select v-model="codeForm.mode" placeholder="Mode">
             <el-option label="Array" value="array"></el-option>
             <el-option label="Tree" value="tree"></el-option>
-            <!--            <el-option label="Graph" value="graph"></el-option>-->
+            <el-option label="Graph" value="graph"></el-option>
           </el-select>
         </el-form-item>
       </el-tooltip>
@@ -37,12 +37,17 @@
           <el-input v-model="codeForm.sample"></el-input>
         </el-form-item>
       </el-tooltip>
+      <el-tooltip  content="输入图的边信息(a:b,c:d)" placement="left" trigger="click">
+        <el-form-item v-show="codeForm.mode === 'graph'" label="Relation" prop="relation">
+          <el-input v-model="codeForm.relation"></el-input>
+        </el-form-item>
+      </el-tooltip>
       <el-tooltip content="输入代码(改变Mode或Language会清空)" placement="top" trigger="click">
         <el-form-item label="Code" prop="codes">
           <div class="editor" style="width: 100%">
             <v-ace-editor
                 v-model:value="codeForm.codes"
-                lang="java"
+                :lang="codeForm.lang"
                 style="height: 300px"
                 theme="xcode"
             />
@@ -60,6 +65,8 @@
 import axios from "axios"
 import {VAceEditor} from 'vue3-ace-editor'
 import 'ace-builds/src-noconflict/mode-java'
+import 'ace-builds/src-noconflict/mode-c_cpp'
+import 'ace-builds/src-noconflict/mode-python'
 import 'ace-builds/src-noconflict/theme-xcode'
 import {useStore} from "vuex"
 import {ref, watch} from "vue";
@@ -84,6 +91,7 @@ export default {
         'tree': "BinaryTree bt = new BinaryTree();\n" +
             "BinaryTreeNode root = bt.getRoot();\n",
         'array': "DataList data = new DataList();\n",
+        'graph': "Graph g = new Graph();"
       },
       'cpp': {
         'array': "int main(){\n" +
@@ -92,12 +100,16 @@ export default {
         'tree': "int main(){\n" +
             "\tBinaryTree binaryTree;\n" +
             "\tBinaryTreeNode* root = binaryTree.getRoot();\n" +
-            "}"
+            "}",
+        'graph': "int main(){\n" +
+            "\tGraph g;\n" +
+            "}",
       },
       'python': {
         'array': "data = DataList()\n",
         'tree': "bt = BinaryTree()\n" +
-            "root = bt.root\n"
+            "root = bt.root\n",
+        'graph': "g = Graph()"
       },
       'array': {
         sample: '7,6,2,4,3,1,5',
@@ -106,7 +118,16 @@ export default {
       'tree': {
         sample: '1,2,3,4,0,6',
         reg: /^([0-9]+,)*([0-9]+)$/
+      },
+      'graph': {
+        sample: '1,2,3,4',
+        reg: /^([0-9]+,)*([0-9]+)$/,
       }
+    }
+    const aceMap = {
+      'java': 'java',
+      'python': 'python',
+      'cpp': 'c_cpp'
     }
 
     const store = useStore()
@@ -114,7 +135,8 @@ export default {
     let lang = ref(this.initLang?this.initLang:'java')
     let load = ref(false)
     let sample = ref(this.initSample?this.initSample:config[mode.value].sample)
-    let tag = ref(this.initTag?this.initTag:(lang.value + '_' + mode.value))
+    let tag = ref(this.initTag?this.initTag:("trial"))
+    let relation = ref("0:1,1:2")
     let codes = ref(this.initCode?this.initCode:config[lang.value][mode.value])
     let wrong = ref(false);
     let description = ref(null);
@@ -125,14 +147,27 @@ export default {
           return;
         }
         load.value = true
+        let url
+        if(this.codeForm.mode === "graph"){
+          const len = this.codeForm.sample.length
+          let relationMatrix = new Array(len * len).fill(0)
+          let splitRelation = this.codeForm.relation.split(",")
+          splitRelation.forEach((e)=>{
+            let edge = e.split(":")
+            relationMatrix[Number(edge[0]) * len + Number(edge[1])] = 1
+          })
+          url = "submit?lang=" + this.codeForm.lang + "&mode=" + this.codeForm.mode + "&sample=" + this.codeForm.sample.replaceAll('x', '0') + "&tag=" + this.codeForm.tag + "&relation=" + relationMatrix.join(',')
+        }else{
+          url = "submit?lang=" + this.codeForm.lang + "&mode=" + this.codeForm.mode + "&sample=" + this.codeForm.sample.replaceAll('x', '0') + "&tag=" + this.codeForm.tag
+        }
         axios({
-          url: "submit?lang=" + this.codeForm.lang + "&mode=" + this.codeForm.mode + "&sample=" + this.codeForm.sample.replaceAll('x', '0') + "&tag=" + this.codeForm.tag,
+          url: url,
           method: 'POST',
           headers: {'content-type': 'text/plain'},
           data: this.codeForm.codes
         }).then((res) => {
           load.value = false
-          const ret = [sample.value.split(','), res.data['msg'].split(':'), mode.value, codes.value, lang.value, sample.value, tag.value]
+          const ret = [sample.value.split(','), res.data['msg'].split(':'), mode.value, codes.value, lang.value, sample.value, tag.value, relation.value]
           this.$emit('submitted', ret)
         }).catch((err) => {
           load.value = false
@@ -176,6 +211,17 @@ export default {
         }
       }, 100)
     }
+    const checkRelation = (rule, value, callback) => {
+      if(mode.value !== 'graph') callback()
+      const relationPattern = /^([0-9]+:[0-9]+,)*$/;
+      setTimeout(() => {
+        if (!relationPattern.test(value + ',') && value.length !== 0) {
+          callback(new Error('[注意]测试样例格式: \"0:1,1:2\"'))
+        } else {
+          callback()
+        }
+      }, 100)
+    }
 
     watch(mode, (newMode, old) => {
       sample.value = config[mode.value].sample
@@ -189,19 +235,22 @@ export default {
       load,
       wrong,
       description,
+      aceMap,
       codeForm: {
         mode,
         lang,
         codes,
         sample,
-        tag
+        tag,
+        relation
       },
       rules: {
         sample: [{required: true, validator: checkSample, trigger: 'blur'}],
         lang: [{required: true, trigger: 'blur'}],
         codes: [{required: true, trigger: 'blur'}],
         mode: [{required: true, trigger: 'blur'}],
-        tag: [{required: true, validator: checkTag, trigger: 'blur'}]
+        tag: [{required: true, validator: checkTag, trigger: 'blur'}],
+        relation: [{required: true, validator: checkRelation, trigger: 'blur'}]
       }
     }
   },
