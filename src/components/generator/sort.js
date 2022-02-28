@@ -10,6 +10,7 @@ export function getSortTypes() {
          */
         "bubble": "冒泡排序",
         "select": "选择排序",
+        "insert": "插入排序",
     }
 }
 
@@ -80,6 +81,32 @@ export function getFunctions() {
                 infos.value.push("前" + (i + 1) + "个数字已排好序")
                 mvs.value.push("clear()")
                 infos.value.push("第" + (i + 1) + "次循环完成")
+            }
+            mvs.value.push("clear()")
+            infos.value.push("排序完成")
+        },
+        "insert": (data, mvs, infos) => {
+            let len = data.length;
+            for (let i = 1; i < len; i++) {
+                let tempIndex = i
+                for (let j = i - 1; j >= 0; j--) {
+                    mvs.value.push("get(" + tempIndex + ")")
+                    infos.value.push("获取arr[" + (tempIndex + 1) + "]的值")
+                    mvs.value.push("get(" + j + ")")
+                    infos.value.push("获取arr[" + (j + 1) + "]的值")
+                    if (data[tempIndex] < data[j]) {
+                        mvs.value.push("swap(" + tempIndex + "," + j + ")")
+                        infos.value.push("arr[" + (j + 1) + "]的值(" + data[j] + ")大于arr[" + (tempIndex + 1) + "]的值(" + data[tempIndex] + ")，进行交换")
+                        let temp = data[tempIndex];
+                        data[tempIndex] = data[j];
+                        data[j] = temp;
+                        tempIndex = j
+                    } else break
+                }
+                mvs.value.push("clear()")
+                infos.value.push("第" + i + "次循环完成")
+                mvs.value.push("barrier(" + (i + 1) + ")")
+                infos.value.push("仅处理前" + (i + 1) + "个数字")
             }
             mvs.value.push("clear()")
             infos.value.push("排序完成")
