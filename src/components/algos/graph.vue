@@ -65,7 +65,7 @@
 <script>
 import GraphCore from './animate/graph-core.vue'
 import {useRoute} from "vue-router";
-import {inject, onMounted, ref} from 'vue'
+import {inject, onBeforeUpdate, onMounted, ref} from 'vue'
 import {DoubleDown, Help} from "@icon-park/vue-next";
 import {useStore} from "vuex";
 import {getFunctions} from "../generator/graph.js";
@@ -155,6 +155,15 @@ export default {
       setTimeout(() => {
         loaded.value = true
         store.dispatch("Finished_frame")
+        store.dispatch("Finished")
+      }, 500)
+    })
+    onBeforeUpdate(()=>{
+      setTimeout(() => {
+        loaded.value = true
+        type.value = route.params.type
+        store.dispatch("Finished_frame")
+        store.dispatch("Finished")
       }, 500)
     })
     return {
@@ -178,7 +187,7 @@ export default {
   },
   watch: {
     '$route.params'(newval) {
-      this.type = newval.type;
+      this.loaded = false
     }
   },
 }
