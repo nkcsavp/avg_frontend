@@ -22,8 +22,7 @@
         </el-sub-menu>
         <el-sub-menu index="3">
           <template #title>
-            <christmas-tree :strokeWidth="3" fill="#000000" size="24" strokeLinecap="butt" strokeLinejoin="miter"
-                            theme="outline"/>
+            <graphic-stitching-three theme="outline" size="24" fill="#000000" :strokeWidth="3" strokeLinejoin="miter" strokeLinecap="butt"/>
             <span> 图算法</span></template>
           <el-menu-item v-for="(value,key) in allGraphTypes" :index="'/graph/' + key">{{ value }}</el-menu-item>
         </el-sub-menu>
@@ -42,7 +41,7 @@
 <script>
 import {useStore} from "vuex";
 import {provide} from "vue";
-import {Api, ChristmasTree, SortTwo} from "@icon-park/vue-next";
+import {Api, ChristmasTree, SortTwo, GraphicStitchingThree} from "@icon-park/vue-next";
 import {getSortTypes} from "./generator/sort.js";
 import {getTreeTypes} from "./generator/tree.js";
 import {getGraphTypes} from "./generator/graph.js";
@@ -70,7 +69,8 @@ export default {
   components: {
     Api,
     ChristmasTree,
-    SortTwo
+    SortTwo,
+    GraphicStitchingThree
   }
 }
 </script>

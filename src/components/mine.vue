@@ -157,7 +157,6 @@ export default {
     let dta = ref(null)
     let pageSize = 5
     let page = ref(1)
-    let validMessageReg = /^(([\w]+\((([\d]+,)*[\d]+)*\)):)*[\w]+\((([\d]+,)*[\d]+)*\)$/
 
     let status = ref("")
     let tag = ref("")
@@ -314,6 +313,7 @@ export default {
   components: {
     ArrayCore,
     TreeCore,
+    GraphCore,
     Left
   }
 }
