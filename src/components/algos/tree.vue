@@ -75,17 +75,17 @@ export default {
     let confirm = ref(false);
     let loaded = ref(false)
     const checkSample = (rule, value, callback) => {
-      const samplePattern = /^([0-9x],)*[0-9x]$/;
+      const samplePattern = /^([0-9]+,)*([0-9]+)$/;
       setTimeout(() => {
         if (!samplePattern.test(value)) {
-          callback(new Error('[注意]测试样例格式: \"1,2,3,4,x,6\"'))
+          callback(new Error('[注意]测试样例格式: \"1,2,3,4,0,6\"'))
         } else {
           callback()
         }
       }, 100)
     }
     const sampleForm = {
-      sample: "1,2,3,4,x,6"
+      sample: "1,2,3,4,0,6"
     }
     const rules = {
       sample: [{required: true, validator: checkSample, trigger: 'blur'}],
@@ -99,7 +99,7 @@ export default {
             mvs.value = []
             infos.value = []
             dta.value = sampleForm.sample.split(",").map((i)=>{
-              if(isNaN(Number(i))){
+              if(Number(i) === 0){
                 return undefined
               } else {
                 return Number(i)

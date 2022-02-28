@@ -75,7 +75,7 @@ export default {
     let confirm = ref(false);
     let loaded = ref(false);
     const checkSample = (rule, value, callback) => {
-      const samplePattern = /^([0-9],)*[0-9]$/;
+      const samplePattern = /^([0-9]+,)*([0-9]+)$/;
       setTimeout(() => {
         if (!samplePattern.test(value)) {
           callback(new Error('[注意]测试样例格式: \"7,6,2,4,3,1,5\"'))
