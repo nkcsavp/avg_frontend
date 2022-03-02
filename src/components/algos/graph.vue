@@ -28,7 +28,7 @@
       <div v-else class="sample-frame">
         <el-row :align="'middle'" :gutter="15">
           <el-col :lg="2" :md="2" :sm="12" :xl="2" :xs="12">
-            <el-tooltip content="在此输入测试样例，点击右侧按钮确认" placement="top">
+            <el-tooltip content="在此输入测试样例，点击右侧按钮确认。其中，Start和Relation的值为数据的索引。" placement="top">
             <span>Data<help :strokeWidth="4" fill="#000000" size="16" strokeLinecap="butt" strokeLinejoin="miter"
                             theme="outline"/></span>
             </el-tooltip>
@@ -69,6 +69,7 @@ import {inject, onBeforeUpdate, onMounted, ref} from 'vue'
 import {DoubleDown, Help} from "@icon-park/vue-next";
 import {useStore} from "vuex";
 import {getFunctions} from "../generator/graph.js";
+import {ElNotification} from "element-plus";
 
 export default {
   name: "graph",
@@ -138,13 +139,26 @@ export default {
             }
             const start = Number(sampleForm.start)
             if(start >= dta.value.length){
-              return;
+              ElNotification({
+                title: 'Error',
+                message: "输入的索引超出数据长度",
+                type: 'error',
+              })
+              return
             }
             let tempRelation = sampleForm.relation.split(",")
-            tempRelation.forEach((e)=>{
-              let edge = e.split(":")
+            for(let i = 0; i < tempRelation.length; i++){
+              let edge = tempRelation[i].split(":")
+              if(Number(edge[0]) >= dta.value.length || Number(edge[1]) >= dta.value.length){
+                ElNotification({
+                  title: 'Error',
+                  message: "输入的索引超出数据长度",
+                  type: 'error',
+                })
+                return
+              }
               rel.value[Number(edge[0])][Number(edge[1])] = 1
-            })
+            }
             getFunctions()[type.value](dta.value.concat(),rel.value,mvs,infos,start);
             confirm.value = !confirm.value;
           }
