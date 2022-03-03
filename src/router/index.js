@@ -12,6 +12,7 @@ const Tree = () => import("../components/algos/tree.vue")
 const Graph = () => import("../components/algos/graph.vue")
 const Interactive = () => import("../components/interactive.vue")
 const Hello = () => import("../components/hello.vue")
+const Share = () => import("../components/share.vue")
 
 
 const routes = [
@@ -38,6 +39,10 @@ const routes = [
             {
                 path: '/tree/:type',
                 component: Tree,
+            },
+            {
+                path: '/share',
+                component: Share,
             }
         ]
     },
@@ -74,7 +79,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
 
-    if (to.fullPath.search("sort|tree|graph|interactive") !== -1) {
+    if (to.fullPath.search("sort|tree|graph|interactive|share") !== -1) {
         store.dispatch("Load_frame")
     } else {
         store.dispatch("Load")

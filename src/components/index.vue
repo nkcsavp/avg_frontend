@@ -6,6 +6,10 @@
           <api :strokeWidth="3" fill="#000000" size="24" strokeLinecap="butt" strokeLinejoin="miter" theme="outline"/>
           自定义
         </el-menu-item>
+        <el-menu-item index="/share">
+          <airplay :strokeWidth="3" fill="#000000" size="24" strokeLinecap="butt" strokeLinejoin="miter" theme="outline"/>
+          ShareKey
+        </el-menu-item>
         <el-sub-menu index="1">
           <template #title>
             <sort-two :strokeWidth="3" fill="#000000" size="24" strokeLinecap="butt" strokeLinejoin="miter"
@@ -41,7 +45,7 @@
 <script>
 import {useStore} from "vuex";
 import {provide} from "vue";
-import {Api, ChristmasTree, SortTwo, GraphicStitchingThree} from "@icon-park/vue-next";
+import {Api, ChristmasTree, SortTwo, GraphicStitchingThree, Airplay} from "@icon-park/vue-next";
 import {getSortTypes} from "./generator/sort.js";
 import {getTreeTypes} from "./generator/tree.js";
 import {getGraphTypes} from "./generator/graph.js";
@@ -70,7 +74,8 @@ export default {
     Api,
     ChristmasTree,
     SortTwo,
-    GraphicStitchingThree
+    GraphicStitchingThree,
+    Airplay
   }
 }
 </script>

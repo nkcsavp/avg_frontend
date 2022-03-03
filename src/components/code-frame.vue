@@ -83,7 +83,8 @@ export default {
     'initMode': String,
     'initLang': String,
     'initSample': String,
-    'initTag': String
+    'initTag': String,
+    'initRelation': String
   },
   data() {
     const config = {
@@ -136,7 +137,7 @@ export default {
     let load = ref(false)
     let sample = ref(this.initSample?this.initSample:config[mode.value].sample)
     let tag = ref(this.initTag?this.initTag:("trial"))
-    let relation = ref("0:1,1:2")
+    let relation = ref(this.initRelation?this.initRelation:"0:1,1:2")
     let codes = ref(this.initCode?this.initCode:config[lang.value][mode.value])
     let wrong = ref(false);
     let description = ref(null);
@@ -168,7 +169,7 @@ export default {
           data: this.codeForm.codes
         }).then((res) => {
           load.value = false
-          const ret = [sample.value.split(','), res.data['msg'].split(':'), mode.value, codes.value, lang.value, sample.value, tag.value, relation.value, relationMatrix]
+          const ret = [sample.value.split(',').map((val)=>val === '0'?undefined:Number(val)), res.data['msg'].split(':'), mode.value, codes.value, lang.value, sample.value, tag.value, relation.value, relationMatrix]
           this.$emit('submitted', ret)
         }).catch((err) => {
           load.value = false

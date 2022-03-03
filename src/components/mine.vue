@@ -97,6 +97,8 @@
                          @click="showAnimation(i['sample'],i['animation'],i['mode'])">Active Animation
               </el-button>
               <el-button v-show="i['status'] !== 1" disabled type="warning">Empty Animation</el-button>
+              <el-button type="info" v-if="Boolean(i['shared'])" @click="share(i['identifier'],false);i['shared'] = false">Stop</el-button>
+              <el-button type="info" v-else @click="share(i['identifier'],true);i['shared'] = true">Share</el-button>
               <el-button type="danger" @click="removeTask(i['identifier'])">Remove</el-button>
             </el-descriptions-item>
           </el-descriptions>
@@ -270,17 +272,20 @@ export default {
       })
     }
     const copyCode = (content) => {
+      copy(content)
+      ElNotification({
+        title: 'Success',
+        message: "代码复制成功",
+        type: 'success',
+      })
+    }
+    const copy = (content) => {
       let txa = document.createElement('textarea')
       txa.value = content
       document.body.appendChild(txa)
       txa.select()
       document.execCommand('copy')
       document.body.removeChild(txa)
-      ElNotification({
-        title: 'Success',
-        message: "代码复制成功",
-        type: 'success',
-      })
     }
     const toggle = function () {
       show.value = !show.value
@@ -291,7 +296,10 @@ export default {
         dta.value = sample.split('&')[0].split(',')
         rel.value = sample.split('&')[1].split(',')
       }
-      else {
+      else if(mode === "tree"){
+        dta.value = sample.split(',').map((val)=>val === '0'?undefined:Number(val))
+      }
+      else{
         dta.value = sample.split(',')
       }
       type.value = mode
@@ -325,6 +333,43 @@ export default {
       return item.sample
 
     }
+    const share = (identifier, shared) => {
+      store.dispatch("Load")
+      axios({
+        url: "/info/tasks/share",
+        method: "POST",
+        params: {
+          identifier: identifier,
+          shared: shared
+        }
+      }).then((res) => {
+        store.dispatch("Finished")
+        if(shared){
+          ElNotification({
+            title: 'Success',
+            message: "ShareKey已复制到剪贴板，其他用户可直接输入该ShareKey查看该任务信息",
+            type: 'success',
+            duration: 20*1000
+          })
+          copy(res.data['msg'])
+        }
+        else{
+          ElNotification({
+            title: 'Warning',
+            message: res.data['msg'],
+            type: 'warning',
+            duration: 20*1000
+          })
+        }
+      }).catch((err) => {
+        store.dispatch("Finished")
+        ElNotification({
+          title: 'Error',
+          message: err.response.data['msg'],
+          type: 'error',
+        })
+      })
+    }
     getData(1);
     return {
       type,
@@ -341,6 +386,7 @@ export default {
       tag,
       copyCode,
       toggle,
+      share,
       showAnimation,
       getData,
       removeTask,
