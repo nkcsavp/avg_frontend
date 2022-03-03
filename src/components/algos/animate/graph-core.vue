@@ -93,6 +93,7 @@ export default {
         motion: true,
         emphasisColor: '#66b1ff',
         emphasisTextColor: "#ecf5ff",
+        emphasisLineColor: "#409eff",
         textColor: '#409eff',
         fillColor: '#b3d8ff',
         position: [nowPosition],
