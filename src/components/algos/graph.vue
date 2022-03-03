@@ -133,10 +133,7 @@ export default {
             mvs.value = []
             infos.value = []
             dta.value = sampleForm.sample.split(",").map(Number)
-            rel.value = new Array(dta.value.length)
-            for(let i = 0; i < dta.value.length; i++){
-              rel.value[i] = new Array(dta.value.length).fill(0)
-            }
+            rel.value = new Array(dta.value.length * dta.value.length)
             const start = Number(sampleForm.start)
             if(start >= dta.value.length){
               ElNotification({
@@ -157,7 +154,7 @@ export default {
                 })
                 return
               }
-              rel.value[Number(edge[0])][Number(edge[1])] = 1
+              rel.value[Number(edge[0]) * dta.value.length + Number(edge[1])] = 1
             }
             getFunctions()[type.value](dta.value.concat(),rel.value,mvs,infos,start);
             confirm.value = !confirm.value;

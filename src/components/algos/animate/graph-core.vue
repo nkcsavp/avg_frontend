@@ -16,7 +16,7 @@
                           theme="outline"/></span>
         </el-tooltip>
         <div style="height: 255px">
-          <el-scrollbar ref="scrollbar" native style="padding-top: 10px" @scroll="scroll">
+          <el-scrollbar ref="scrollbar" native style="padding-top: 10px">
             <div>
               <p v-for="(item,idx) in infos" :key="item"
                  :class="{'list-item':true,'list-item-emphasized':nowPosition === idx}">
@@ -98,10 +98,14 @@ export default {
         position: [nowPosition],
         speed: 0.5
       }
+      let rel = []
+      for(let i = 0; i < props.dta.length; i++){
+        rel[i] = props.rel.slice(i * props.dta.length, i * props.dta.length + props.dta.length).map(Number)
+      }
       let info = {
         'dta': props.dta.concat(),
         'mvs': props.mvs,
-        'rel': props.rel
+        'rel': rel
       }
       init(set, info, canvas.value)
       pause(paused.value)

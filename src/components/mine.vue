@@ -55,7 +55,7 @@
                   Sample
                 </div>
               </template>
-              {{ i['sample'] }}
+              {{ getSample(i) }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>
@@ -128,7 +128,7 @@
         <tree-core v-if="!show && type === 'tree'" :key="type" :dta="dta" :enable-info="false" :infos="[]"
                    :mvs='mvs'></tree-core>
         <graph-core v-if="!show && type === 'graph'" :key="type" :dta="dta" :enable-info="false" :infos="[]"
-                   :mvs='mvs'></graph-core>
+                   :mvs='mvs' :rel="rel"></graph-core>
       </div>
     </transition>
   </div>
@@ -155,6 +155,7 @@ export default {
     let type = ref(null)
     let mvs = ref(null)
     let dta = ref(null)
+    let rel = ref(null)
     let pageSize = 5
     let page = ref(1)
 
@@ -286,9 +287,43 @@ export default {
     }
     const showAnimation = function (sample, animation, mode) {
       mvs.value = animation.split(':')
-      dta.value = sample.split(',')
+      if(mode === "graph"){
+        dta.value = sample.split('&')[0].split(',')
+        rel.value = sample.split('&')[1].split(',')
+      }
+      else {
+        dta.value = sample.split(',')
+      }
       type.value = mode
       toggle()
+    }
+    const getSample = (item) => {
+      let needSep = false
+      if(item.mode === "graph"){
+        let raw = item.sample
+        let splits = raw.split("&")
+        let matrix = splits[1].split(",")
+        const len = (splits[0].length + 1) / 2
+        let result = splits[0] + "&"
+
+        for(let i = 0; i < matrix.length; i++){
+            if(Number(matrix[i]) === 1){
+              let first = Math.floor(i / len)
+              let second = i % len
+              if(!needSep){
+                needSep = true
+              }
+              else{
+                result += ","
+              }
+              result += ( first + ":" + second )
+
+            }
+        }
+        return result
+      }
+      return item.sample
+
     }
     getData(1);
     return {
@@ -302,12 +337,14 @@ export default {
       status,
       mode,
       lang,
+      rel,
       tag,
       copyCode,
       toggle,
       showAnimation,
       getData,
-      removeTask
+      removeTask,
+      getSample
     }
   },
   components: {

@@ -16,7 +16,7 @@
                           theme="outline"/></span>
         </el-tooltip>
         <div style="height: 255px">
-          <el-scrollbar ref="scrollbar" native style="padding-top: 10px" @scroll="scroll">
+          <el-scrollbar ref="scrollbar" native style="padding-top: 10px">
             <div>
               <p v-for="(item,idx) in infos" :key="item"
                  :class="{'list-item':true,'list-item-emphasized':nowPosition === idx}">

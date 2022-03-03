@@ -32,10 +32,10 @@
         <tree-core v-if="confirm && type === 'tree'" :key="type" :dta="dta" :enable-info="false" :infos="infos"
                    :mvs='mvs'></tree-core>
         <graph-core v-if="confirm && type === 'graph'" :key="type" :dta="dta" :enable-info="false" :infos="infos"
-                   :mvs='mvs'></graph-core>
+                   :mvs='mvs' :rel="relation"></graph-core>
       </div>
       <code-frame v-else :init-code="codeSave" :init-lang="langSave" :init-mode="type" :init-sample="sampleSave"
-                  :init-tag="tagSave" @submitted="submitted($event,data)"></code-frame>
+                  :init-tag="tagSave" :init-relation="relationSave" @submitted="submitted($event,data)"></code-frame>
     </transition>
   </div>
 </template>
@@ -54,10 +54,11 @@ export default {
   name: "interactive",
   data() {
     const store = useStore();
-    let dta = ref([])
-    let mvs = ref([])
-    let infos = ref([])
+    let dta = ref()
+    let mvs = ref()
+    let infos = ref()
     let type = ref('')
+    let relation = ref()
     let relationSave = ref('')
     let codeSave = ref(null)
     let langSave = ref(null)
@@ -77,6 +78,7 @@ export default {
       sampleSave.value = data[5]
       tagSave.value = data[6]
       relationSave.value = data[7]
+      relation.value = data[8]
       toggle()
     }
     onMounted(() => {
@@ -95,9 +97,11 @@ export default {
     return {
       confirm,
       loaded,
+      relation,
       codeSave,
       langSave,
       sampleSave,
+      relationSave,
       tagSave,
       type,
       toggle,

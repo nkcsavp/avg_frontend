@@ -148,9 +148,10 @@ export default {
         }
         load.value = true
         let url
+        let relationMatrix
         if(this.codeForm.mode === "graph"){
-          const len = this.codeForm.sample.length
-          let relationMatrix = new Array(len * len).fill(0)
+          const len = ( this.codeForm.sample.length + 1 ) / 2
+          relationMatrix = new Array(len * len).fill(0)
           let splitRelation = this.codeForm.relation.split(",")
           splitRelation.forEach((e)=>{
             let edge = e.split(":")
@@ -167,7 +168,7 @@ export default {
           data: this.codeForm.codes
         }).then((res) => {
           load.value = false
-          const ret = [sample.value.split(','), res.data['msg'].split(':'), mode.value, codes.value, lang.value, sample.value, tag.value, relation.value]
+          const ret = [sample.value.split(','), res.data['msg'].split(':'), mode.value, codes.value, lang.value, sample.value, tag.value, relation.value, relationMatrix]
           this.$emit('submitted', ret)
         }).catch((err) => {
           load.value = false
