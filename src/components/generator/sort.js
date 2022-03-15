@@ -12,6 +12,7 @@ export function getSortTypes() {
         "select": "选择排序",
         "insert": "插入排序",
         "quick" : "快速排序",
+
     }
 }
 
