@@ -169,6 +169,5 @@ export function getFunctions() {
             mvs.value.push("blank()")
             infos.value.push("排序完成")
         }
-
     }
 }
