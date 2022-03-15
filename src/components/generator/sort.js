@@ -11,6 +11,7 @@ export function getSortTypes() {
         "bubble": "冒泡排序",
         "select": "选择排序",
         "insert": "插入排序",
+        "quick" : "快速排序",
     }
 }
 
@@ -107,6 +108,55 @@ export function getFunctions() {
                 infos.value.push("第" + i + "次循环完成")
                 mvs.value.push("barrier(" + (i + 1) + ")")
                 infos.value.push("仅处理前" + (i + 1) + "个数字")
+            }
+            mvs.value.push("clear()")
+            infos.value.push("排序完成")
+        },
+
+        "quick": (data, mvs, infos) => {
+            const quickSort = (left = 0, right = data.length - 1) => {
+                let i = left
+                let j = right
+                const baseVal = data[left] // 取无序数组第一个数为基准值
+                mvs.value.push("get(" + baseVal + ")")
+                infos.value.push("获取arr[" + (baseVal + 1) + "]的值为基准值")
+                while (i < j) {//把所有比基准值小的数放在左边大的数放在右边
+                    mvs.value.push("get(" + i + ")")
+                    infos.value.push("获取arr[" + (i + 1) + "]的值")
+                    mvs.value.push("get(" + j + ")")
+                    infos.value.push("获取arr[" + (j + 1) + "]的值")
+                    while (j > i && data[j] > baseVal) { //找到一个比基准值小的数交换
+                        mvs.value.push("get(" + j + ")")
+                        infos.value.push("获取arr[" + (j + 1) + "]的值")
+                        j--
+                    }
+                    while (i < j && data[i] < baseVal) { //找到一个比基准值大的数交换
+                        mvs.value.push("get(" + i + ")")
+                        infos.value.push("获取arr[" + (i + 1) + "]的值")
+                        i++
+                    }
+                    if (i < j && arr[i] === arr[j]) {
+                        mvs.value.push("get(" + i + ")")
+                        infos.value.push("获取arr[" + (i + 1) + "]的值")
+                        i++;
+                    } else {//交换
+                        mvs.value.push("swap(" + i + "," + j + ")")
+                        infos.value.push("arr[" + (i + 1) + "]的值(" + data[i] + ")大于arr[" + (j + 1) + "]的值(" + data[j] + ")，进行交换")
+                        let temp = data[i];
+                        data[i] = data[j];
+                        data[j] = temp;
+                    }
+                }
+                mvs.value.push("clear()")
+                infos.value.push("该数字排在第" + (i + 1) + "位")
+                // 将左边的无序数组重复上面的操作
+                if(i-1>left) {
+                    quickSort(left, j-1)
+                }
+                // 将右边的无序数组重复上面的操作
+                if(j+1<right) {
+                    quickSort(j+1, right)
+                }
             }
             mvs.value.push("clear()")
             infos.value.push("排序完成")
