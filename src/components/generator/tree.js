@@ -14,6 +14,8 @@ export function getTreeTypes() {
         "inorder": "中序遍历",
         "postorder": "后序遍历",
         "levelorder": "层序遍历",
+        "flip": "二叉树翻转",
+        "maxdepth": "最大树深度",
     }
 }
 
@@ -125,7 +127,45 @@ export function getFunctions() {
                 }
             }
         },
-
-
+        /*
+            二叉树翻转，非镜像翻转
+        */
+        "flip": (data, mvs,infos) =>{
+            const flip = (pos) =>{
+                if(pos >= data.length || !data[pos]) return;
+                if(!(2 * pos + 1 >= data.length || !data[2 * pos + 1] || 2 * pos + 2 >= data.length || !data[2 * pos + 2])){
+                    mvs.value.push("blank()");
+                    infos.value.push("将要处理 " + data[pos] + " 的左右子结点");
+                }
+                mvs.value.push("swap(" + (2 * pos + 1) + "," + (2 * pos + 2) + ")");
+                infos.value.push("交换结点 " + data[2 * pos + 1] + "和" + data[2 * pos + 2]);
+                flip(2 * pos + 1);
+                flip(2 * pos + 2);
+            }
+            flip(0);
+        },
+        /*
+            二叉树最大深度统计
+        */
+        "maxdepth": (data,mvs,infos) =>{
+            let depth = 0;
+            const maxDepth = (pos,depthVal) =>{
+                if(pos >= data.length || !data[pos]) return;
+                depth = Math.max(depthVal, depth);
+                mvs.value.push("get(" + pos + ")");
+                infos.value.push("该节点深度为 " + depthVal + "," + "目前检查到的树的最大深度为" + depth);
+                if(2 * pos + 1 < data.length && data[2 * pos + 1]){
+                    mvs.value.push("blank()");
+                    infos.value.push("将要处理 " + data[pos] + " 的左子结点");
+                }
+                maxDepth(2 * pos + 1,depthVal + 1);
+                if(2 * pos + 2 < data.length && data[2 * pos + 2]){
+                    mvs.value.push("blank()");
+                    infos.value.push("将要处理 " + data[pos] + " 的右子结点");
+                }
+                maxDepth(2 * pos + 2,depthVal + 1);
+            }
+            maxDepth(0,1);
+        },
     }
 }
