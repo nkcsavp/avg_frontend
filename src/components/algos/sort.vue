@@ -113,8 +113,9 @@ export default {
       }, 500)
     })
     onBeforeUpdate(()=>{
+      confirm.value = false
+      loaded.value = true
       setTimeout(() => {
-        loaded.value = true
         type.value = route.params.type
         store.dispatch("Finished_frame")
         store.dispatch("Finished")
