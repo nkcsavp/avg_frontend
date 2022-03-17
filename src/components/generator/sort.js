@@ -12,7 +12,8 @@ export function getSortTypes() {
         "select": "选择排序",
         "insert": "插入排序",
         "quick": "快速排序",
-        "shell": "希尔排序"
+        "shell": "希尔排序",
+        "merge": "归并排序"
 
     }
 }
@@ -193,6 +194,37 @@ export function getFunctions() {
                             break;
                         temp -= gap;
                     }
+                }
+            }
+        },
+        "merge": (data, mvs, infos) => {
+            const swap = (data, i, j) => {
+                let temp = data[i];
+                data[i] = data[j];
+                data[j] = temp;
+            }
+            const merge = (arr, index, len) => {
+                for (var i = index + len / 2; i <= Math.min(arr.length - 1, index + len - 1); i++) {
+                    var temp = i;
+                    while (temp - 1 >= 0) {
+                        mvs.value.push("get(" + (temp - 1) + ")")
+                        infos.value.push("获取arr[" + (temp) + "]的值")
+                        mvs.value.push("get(" + (temp) + ")")
+                        infos.value.push("获取arr[" + (temp + 1) + "]的值")
+                        if (arr[temp] < arr[temp - 1]) {
+                            mvs.value.push("swap(" + (temp - 1) + "," + temp + ")")
+                            infos.value.push("arr[" + (temp) + "]的值(" + data[temp - 1] + ")大于arr[" + (temp + 1) + "]的值(" + data[temp] + ")，进行交换")
+                            swap(data, temp - 1, temp);
+                        } else {
+                            break;
+                        }
+                        temp--;
+                    }
+                }
+            }
+            for (var i = 2; (i <= data.length) || (i / 2 < data.length && i > data.length); i *= 2) {
+                for (var j = 0; j < data.length; j += i) {
+                    merge(data, j, i);
                 }
             }
         }
