@@ -16,6 +16,7 @@ export function getTreeTypes() {
         "levelorder": "层序遍历",
         "flip": "二叉树翻转",
         "maxdepth": "最大树深度",
+        "heapsort":"堆排序",
     }
 }
 
@@ -167,5 +168,64 @@ export function getFunctions() {
             }
             maxDepth(0,1);
         },
+        /*
+            堆排序
+        */
+       "heapsort":(data,mvs,infos)=>{
+            let len = data.length;
+            let keepHeap = function(index,len){
+                while(true){
+                    let left = 2*index+1;
+                    let right = left+1;
+                    let maxIndex = index;
+                    
+                    if(left<len){
+                        mvs.value.push("get("+index+")");
+                        infos.value.push("获取arr["+index+"]的值");
+                        mvs.value.push("get("+left+")");
+                        infos.value.push("获取arr["+index+"]左子节点的值");
+                        if(data[left]>data[maxIndex])
+                            maxIndex=left;
+                    }
+                    if(right<len){
+                        mvs.value.push("get("+right+")");
+                        infos.value.push("获取arr["+index+"]右子节点的值");
+                        if(data[right]>data[maxIndex])
+                            maxIndex=right;
+                    }
+                    if(maxIndex!=index){
+                        let temp = data[maxIndex];
+                        data[maxIndex]=data[index];
+                        data[index]=temp;
+                        let msg=maxIndex==left?"左子节点":"右子节点";
+                        mvs.value.push("swap("+maxIndex+","+index+")");
+                        infos.value.push("交换arr["+index+"]与"+msg);
+                        index = maxIndex;
+                    }
+                    else{
+                        break;
+                    }
+                }
+            };
+            mvs.value.push("blank()");
+            infos.value.push("开始构建基础顶堆");
+            for(let i = len/2-1;i>=0;--i){
+                keepHeap(i,len);
+            }
+            mvs.value.push("blank()");
+            infos.value.push("基础顶堆构建完成");
+            mvs.value.push("blank()");
+            infos.value.push("开始排序");
+            for(let i = len-1;i>1;i--){
+                let temp = data[0];
+                data[0]=data[i];
+                data[i]=temp;
+                mvs.value.push("swap(0,"+i.toString()+")");
+                        infos.value.push("交换arr[0]与arr["+i.toString()+"],维护新的顶堆");
+                keepHeap(0,i);
+            }
+            mvs.value.push("blank()");
+            infos.value.push("排序完毕");
+       },
     }
 }
