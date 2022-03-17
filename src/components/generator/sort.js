@@ -11,7 +11,8 @@ export function getSortTypes() {
         "bubble": "冒泡排序",
         "select": "选择排序",
         "insert": "插入排序",
-        "quick" : "快速排序",
+        "quick": "快速排序",
+        "shell": "希尔排序"
 
     }
 }
@@ -115,12 +116,12 @@ export function getFunctions() {
         },
 
         "quick": (data, mvs, infos) => {
-            const quickSort = (left, right ) => {
+            const quickSort = (left, right) => {
                 let i = left
                 let j = right
                 const baseVal = data[left] // 取无序数组第一个数为基准值
                 mvs.value.push("get(" + left + ")")
-                infos.value.push("获取arr[" + (left+1) + "]的值为基准值")
+                infos.value.push("获取arr[" + (left + 1) + "]的值为基准值")
                 while (i < j) {//把所有比基准值小的数放在左边大的数放在右边
                     // mvs.value.push("get(" + i + ")")
                     // infos.value.push("获取arr[" + (i + 1) + "]的值")
@@ -142,7 +143,7 @@ export function getFunctions() {
                         infos.value.push("获取arr[" + (i + 1) + "]的值")
                         i++;
                     } else {//交换
-                        if(i>=j) break
+                        if (i >= j) break
                         mvs.value.push("get(" + i + ")")
                         infos.value.push("获取arr[" + (i + 1) + "]的值")
                         mvs.value.push("get(" + j + ")")
@@ -157,17 +158,43 @@ export function getFunctions() {
                 mvs.value.push("blank()")
                 infos.value.push("该数字排在第" + (i + 1) + "位")
                 // 将左边的无序数组重复上面的操作
-                if(i-1>left) {
-                    quickSort(left, j-1)
+                if (i - 1 > left) {
+                    quickSort(left, j - 1)
                 }
                 // 将右边的无序数组重复上面的操作
-                if(j+1<right) {
-                    quickSort(j+1, right)
+                if (j + 1 < right) {
+                    quickSort(j + 1, right)
                 }
             }
-            quickSort(0,data.length-1)
+            quickSort(0, data.length - 1)
             mvs.value.push("blank()")
             infos.value.push("排序完成")
+        },
+
+        "shell": (data, mvs, infos) => {
+            const swap = (i, j) => {
+                let temp = data[i];
+                data[i] = data[j];
+                data[j] = temp;
+            }
+            for (let gap = Math.floor(data.length / 2); gap > 0; gap = Math.floor(gap / 2)) {
+                for (var i = gap; i < data.length; i += gap) {
+                    var temp = i;
+                    while (temp - gap >= 0) {
+                        mvs.value.push("get(" + (temp - gap) + ")")
+                        infos.value.push("获取arr[" + (temp - gap + 1) + "]的值")
+                        mvs.value.push("get(" + (temp) + ")")
+                        infos.value.push("获取arr[" + (temp + 1) + "]的值")
+                        if (data[temp] < data[temp - gap]) {
+                            mvs.value.push("swap(" + (temp - gap) + "," + temp + ")")
+                            infos.value.push("arr[" + (temp - gap + 1) + "]的值(" + data[temp - gap] + ")大于arr[" + (temp + 1) + "]的值(" + data[temp] + ")，进行交换")
+                            swap(temp - gap, temp);
+                        } else
+                            break;
+                        temp -= gap;
+                    }
+                }
+            }
         }
     }
 }
