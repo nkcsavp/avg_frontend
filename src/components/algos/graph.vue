@@ -115,8 +115,8 @@ export default {
       }, 100)
     }
     const sampleForm = {
-      sample: "1,2,3,4",
-      relation: "0:1,1:2",
+      sample: "1,2,3,4,5,6",
+      relation: "0:1,0:3,1:2,1:3,1:4,2:5,4:5",
       start: "0"
     }
     const rules = {
