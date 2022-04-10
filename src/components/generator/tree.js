@@ -152,6 +152,7 @@ export function getFunctions() {
         },
         /*
             堆排序
+            在使用堆排序的时候数组必须是完全二叉树形式，不能有特殊节点0
         */
        "heapsort":(data,mvs,infos)=>{
             let len = data.length;
@@ -175,11 +176,11 @@ export function getFunctions() {
                         if(data[right]>data[maxIndex])
                             maxIndex=right;
                     }
-                    if(maxIndex!=index){
+                    if(maxIndex!==index){
                         let temp = data[maxIndex];
                         data[maxIndex]=data[index];
                         data[index]=temp;
-                        let msg=maxIndex==left?"左子节点":"右子节点";
+                        let msg=maxIndex===left?"左子节点":"右子节点";
                         mvs.value.push("swap("+maxIndex+","+index+")");
                         infos.value.push("交换arr["+index+"]与"+msg);
                         index = maxIndex;
@@ -191,14 +192,14 @@ export function getFunctions() {
             };
             mvs.value.push("blank()");
             infos.value.push("开始构建基础顶堆");
-            for(let i = len/2-1;i>=0;--i){
+            for(let i = Math.floor(len/2);i>=0;--i){
                 keepHeap(i,len);
             }
             mvs.value.push("blank()");
             infos.value.push("基础顶堆构建完成");
             mvs.value.push("blank()");
             infos.value.push("开始排序");
-            for(let i = len-1;i>1;i--){
+            for(let i = len-1;i>=1;i--){
                 let temp = data[0];
                 data[0]=data[i];
                 data[i]=temp;
