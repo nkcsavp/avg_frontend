@@ -99,7 +99,7 @@ export function getFunctions() {
                     mvs.value.push("get(" + j + ")")
                     infos.value.push("获取arr[" + (j + 1) + "]的值")
                     if (data[tempIndex] < data[j]) {
-                        mvs.value.push("swap(" + tempIndex + "," + j + ")")
+                        mvs.value.push("swap(" + j + "," + tempIndex + ")")
                         infos.value.push("arr[" + (j + 1) + "]的值(" + data[j] + ")大于arr[" + (tempIndex + 1) + "]的值(" + data[tempIndex] + ")，进行交换")
                         let temp = data[tempIndex];
                         data[tempIndex] = data[j];
